@@ -8,6 +8,7 @@ extends GaeaNodeResource
 ## For lower [param end] values, the generated 'square' will be smaller.[br]
 ## Multiplying this with a [GaeaNodeSimplexSmooth]'s generation can create island-looking terrains.
 
+## Area preset choices.
 enum FalloffArea {
 	## The area encompassed by a given generation task. Often means the space a given chunk takes up.
 	ChunkArea,
@@ -17,10 +18,15 @@ enum FalloffArea {
 	CustomArea,
 }
 
+## Shapes calculated off of normalized position vectors relative to [member FalloffSampler.area]
 enum FalloffShape {
+	## Based on a [code] max(x, y, z) [/code] algorithm.
 	SQUARE,
+	## Based on a [code] sqrt(x^4 + y^4 + z^4) [/code] algorithm.
 	ROUNDED_SQUARE,
+	## Based on a [code] min(1, vector.length) [/code] algorithm.
 	CIRCLE,
+	## Based on a [code] 1 - (1-x^2) (1-y^2) (1-z^2) [/code]
 	SQUIRCLE,
 }
 
@@ -32,55 +38,14 @@ class FalloffSampler:
 	var pos: Vector3
 	var center: Vector3
 	var radii: Vector3
-	#var pos_x: float
-	#var pos_y: float
-	#var pos_z: float
-	#var size_x: float
-	#var size_y: float
-	#var size_z: float
-	#var size_x_is_smaller: bool
-	#var size_y_is_smaller: bool
-	#var size_z_is_smaller: bool
-	#var size_x_adjusted: float
-	#var size_y_adjusted: float
-	#var size_z_adjusted: float
-	#var size_x_half: float
-	#var size_y_half: float
-	#var size_z_half: float
-	#var size_y_minus_x_half: float
-	#var size_x_minus_y_half: float
-	#var size_z_minus_z_half: float
 
 	func _init(_area: AABB, _start: float, _end: float):
-
 		area = _area
 		start = _start
 		end = _end
 		pos = area.position
 		center = area.get_center()
 		radii = area.size / 2
-
-		#pos_x = area.position.x
-		#pos_y = area.position.y
-		#pos_z = area.position.z
-		#size_x = area.size.x
-		#size_y = area.size.y
-		#size_z = area.size.z
-		#var ratio: float = 1.0
-		#size_x_is_smaller = size_x <= size_y
-		#if not size_x_is_smaller:
-			#ratio = float(size_y) / float(size_x)
-		#size_y_is_smaller = size_y <= size_x
-		#if not size_y_is_smaller:
-			#ratio = float(size_x) / float(size_y)
-		#size_x_adjusted = size_x * ratio
-		#size_y_adjusted = size_y * ratio
-		#size_z_adjusted = size_z * ratio
-		#size_x_half = size_x * 0.5
-		#size_y_half = size_y * 0.5
-		#size_z_half = size_z * 0.5
-		#size_x_minus_y_half = size_x - size_y_half
-		#size_y_minus_x_half = size_y - size_x_half
 		_on_init()
 
 	func _on_init():
@@ -90,31 +55,9 @@ class FalloffSampler:
 		# vector relative to the center, normalized based on radii
 		return (vector - center) / radii
 
-	#func normalize_x(x: float) -> float:
-		#x -= pos_x
-		#if size_x_is_smaller:
-			#return remap(x, 0, size_x - 1.0, -1.0, 1.0)
-		#if x < size_y_half:
-			#return remap(x, 0, size_x_adjusted - 1.0, -1.0, 1.0)
-		#if x > size_x_minus_y_half:
-			#return remap(size_x - x, 1.0, size_x_adjusted, -1.0, 1.0)
-		#return 0
-#
-	#func normalize_y(y: float) -> float:
-		#y -= pos_y
-		#if size_y_is_smaller:
-			#return remap(y, 0, size_y - 1.0, -1.0, 1.0)
-		#if y < size_x_half:
-			#return remap(y, 0, size_y_adjusted - 1.0, -1.0, 1.0)
-		#if y > size_y_minus_x_half:
-			#return remap(size_y - y, 1.0, size_y_adjusted, -1.0, 1.0)
-		#return 0
-
 	func sample(vector: Vector3) -> float:
 		var value: float = clampf(_get_sample(vector), 0.0, 1.0)
-
 		var range_clamped: float = clampf(value, start if start < end else end, end if end > start else start)
-
 		match range_clamped:
 			start: return 1.0
 			end: return 0.0
@@ -131,9 +74,6 @@ class FalloffSamplerSquare:
 		var absolute_normal := normalize(vector).abs()
 		return maxf(maxf(absolute_normal.x, absolute_normal.y), absolute_normal.z)
 
-		# Original 2D Calculation
-		#return maxf(absf(normalize_x(vector.x)), absf(normalize_y(vector.y)))
-
 
 class FalloffSamplerRoundedSquare:
 	extends FalloffSampler
@@ -141,9 +81,6 @@ class FalloffSamplerRoundedSquare:
 	func _get_sample(vector:Vector3) -> float:
 		var normalized := normalize(vector)
 		return sqrt(normalized.x ** 4 + normalized.y ** 4 + normalized.z ** 4)
-
-		# Original 2D Calculation
-		#sqrt(normalize_x(vector.x) ** 4 + (normalize_y(vector.y)) ** 4)
 
 
 class FalloffSamplerCircle:
@@ -156,9 +93,6 @@ class FalloffSamplerCircle:
 	func _get_sample(vector: Vector3) -> float:
 		return min(1.0, normalize(vector).length())
 
-		# Original 2D Calculation
-		#min(1.0, (normalize_x(x) ** 2 + normalize_y(y) ** 2) * one_on_sqrt_two)
-
 
 class FalloffSamplerSquircle:
 	extends FalloffSampler
@@ -166,9 +100,6 @@ class FalloffSamplerSquircle:
 	func _get_sample(vector: Vector3) -> float:
 		var normalized = normalize(vector)
 		return 1.0 - ((1.0 - (normalized.x ** 2)) * (1.0 - (normalized.y ** 2)) * (1.0 - (normalized.z ** 2)))
-
-		# Original 2D Calculation
-		#return 1.0 - (1.0 - normalize_x(vector.x) ** 2) * (1.0 - normalize_y(vector.y) ** 2)
 
 
 func _get_title() -> String:
