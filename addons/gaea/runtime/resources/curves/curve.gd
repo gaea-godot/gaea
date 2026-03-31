@@ -11,20 +11,20 @@ extends Resource
 ## It can also be used to hold sub-resources to be selected programmatically.
 ## See [PointwiseRandomGaeaMaterial] for an [GaeaMaterial] exammple of this.
 
-func sample(x:float) -> float:
-	return _sample(x)
+func sample(offset:float) -> float:
+	return _sample(offset)
 
-func _sample(offset:float) -> float:
+func _sample(_offset:float) -> float:
 	return 0
 
 func sample_2d(idx: int, t: float) -> Vector2:
 	return _sample_2d(idx, t)
 
-func _sample_2d(idx: int, t: float) -> Vector2:
+func _sample_2d(_idx: int, _t: float) -> Vector2:
 	return Vector2.ZERO
 
 func sample_3d(idx: int, t: float) -> Vector3:
 	return _sample_3d(idx, t)
 
-func _sample_3d(idx: int, t: float) -> Vector3:
+func _sample_3d(_idx: int, _t: float) -> Vector3:
 	return Vector3.ZERO

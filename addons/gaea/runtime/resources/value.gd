@@ -230,7 +230,8 @@ static func get_display_icon(type: Type) -> Texture2D:
 		Type.MATERIAL:
 			return load("uid://b0vqox8bodse")
 		Type.CURVE:
-			return load("uid://dkccxw7yq1mth")
+			if Engine.is_editor_hint():
+				return Engine.get_singleton(&"EditorInterface").get_base_control().get_theme_icon(&"Curve", &"EditorIcons")
 		Type.TEXTURE:
 			if Engine.is_editor_hint():
 				return Engine.get_singleton(&"EditorInterface").get_base_control().get_theme_icon(&"Image", &"EditorIcons")
@@ -270,12 +271,10 @@ static func get_default_slot_icon(type: Type) -> Texture2D:
 		# Simple types
 		Type.RANGE:
 			return load("uid://dfsmxavxasx7x")
-		Type.MATERIAL:
+		Type.MATERIAL, Type.CURVE:
 			return load("uid://daasmk1v2rpcm")
 		Type.TEXTURE:
 			return load("uid://ccqq5l0ruur37")
-		Type.CURVE:
-			return load("uid://daasmk1v2rpcm")
 
 		# Dictionary types
 		Type.SAMPLE:

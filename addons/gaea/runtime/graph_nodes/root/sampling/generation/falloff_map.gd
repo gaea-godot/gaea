@@ -11,11 +11,11 @@ extends GaeaNodeResource
 ## Area preset choices.
 enum FalloffArea {
 	## The area encompassed by a given generation task. Often means the space a given chunk takes up.
-	ChunkArea,
+	CHUNK_AREA,
 	## The world area defined in the generation settings.
-	WorldArea,
+	WORLD_AREA,
 	## A custom area defined by position and size arguments.
-	CustomArea,
+	CUSTOM_AREA,
 }
 
 ## Shapes calculated off of normalized position vectors relative to [member FalloffSampler.area]
@@ -134,7 +134,7 @@ func _on_enum_value_changed(enum_idx: int, _option_value: int) -> void:
 
 func _get_arguments_list() -> Array[StringName]:
 	match get_enum_selection(0): # Faloff Area
-		FalloffArea.CustomArea: return [&"position", &"size", &"curve", &"restrict_x", &"restrict_y", &"restrict_z", &"start", &"end"]
+		FalloffArea.CUSTOM_AREA: return [&"position", &"size", &"curve", &"restrict_x", &"restrict_y", &"restrict_z", &"start", &"end"]
 		_: return [&"curve", &"restrict_x", &"restrict_y", &"restrict_z", &"start", &"end"]
 
 
@@ -180,11 +180,11 @@ func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> GaeaValu
 
 	var area: AABB
 	match get_enum_selection(0): # Falloff Area
-		FalloffArea.ChunkArea:
+		FalloffArea.CHUNK_AREA:
 			area = pouch.area
-		FalloffArea.WorldArea:
+		FalloffArea.WORLD_AREA:
 			area = AABB(Vector3.ZERO, pouch.settings.world_size)
-		FalloffArea.CustomArea:
+		FalloffArea.CUSTOM_AREA:
 			var position: Vector3 = _get_arg(&"position", pouch)
 			var size: Vector3 = _get_arg(&"size", pouch)
 			area = AABB(position, size)

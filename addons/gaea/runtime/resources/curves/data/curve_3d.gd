@@ -5,7 +5,7 @@ class_name GaeaCurve3D
 enum AggregationMethod
 {
 	X, Y, Z,
-	Average,
+	AVERAGE,
 }
 
 @export var curve: Curve3D
@@ -33,7 +33,7 @@ func aggregate_scalar(vector: Vector3, method: AggregationMethod):
 		AggregationMethod.X: return vector.x
 		AggregationMethod.Y: return vector.y
 		AggregationMethod.Z: return vector.z
-		AggregationMethod.Average, _: return (vector.x + vector.y + vector.z)/3
+		AggregationMethod.AVERAGE, _: return (vector.x + vector.y + vector.z)/3
 
 
 func aggregate_vector2(vector: Vector3, x_method: AggregationMethod, y_method: AggregationMethod) -> Vector2:
@@ -42,13 +42,13 @@ func aggregate_vector2(vector: Vector3, x_method: AggregationMethod, y_method: A
 		AggregationMethod.X: x = vector.x
 		AggregationMethod.Y: x = vector.y
 		AggregationMethod.Z: x = vector.z
-		AggregationMethod.Average: x = (vector.x + vector.z)/2
+		AggregationMethod.AVERAGE: x = (vector.x + vector.z)/2
 
 	var y: float = 0
 	match x_method:
 		AggregationMethod.X: y = vector.x
 		AggregationMethod.Y: y = vector.y
 		AggregationMethod.Z: y = vector.z
-		AggregationMethod.Average: y = (vector.y + vector.z)/2
+		AggregationMethod.AVERAGE: y = (vector.y + vector.z)/2
 
 	return Vector2(x, y)
