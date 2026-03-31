@@ -1,34 +1,49 @@
 @tool
 class_name GaeaCurve3D
 extends GaeaCurve
+## A [GaeaCurve] wrapper for Godot's builtin [Curve3D] class.
 
 enum AggregationMethod
 {
-	X, Y, Z,
+	## Use just the X value.
+	X,
+	## Use just the Y value.
+	Y,
+	## Use just the Z value.
+	Z,
+	## When [method GaeaCurve.sample] is called, [member scalar_aggregation] indicates using the
+	## average of the X, Y and Z values.[br][br]
+	## When [method GaeaCurve.sample_2d] is called, [member x_aggregation] indicates using the average
+	## of the X and Z values to populate the x component, and [member y_aggregation] indicates using
+	## the average of the Y and Z values.
 	AVERAGE,
 }
 
+## The [Curve3D] to use for sampling.
 @export var curve: Curve3D
+## The [enum AggregationMethod] to use when populating [method GaeaCurve.sample] results.
 @export var scalar_aggregation: AggregationMethod = AggregationMethod.X
+## The [enum AggregationMethod] to use when populating the x value of [method GaeaCurve.sample_2d] results.
 @export var x_aggregation: AggregationMethod = AggregationMethod.X
+## The [enum AggregationMethod] to use when populating the y value of [method GaeaCurve.sample_2d] results.
 @export var y_aggregation: AggregationMethod = AggregationMethod.Y
 
 
 func _sample(offset: float) -> float:
 	var result = curve.sample(0, offset)
-	return aggregate_scalar(result, scalar_aggregation)
+	return _aggregate_scalar(result, scalar_aggregation)
 
 
 func _sample_2d(idx: int, t: float) -> Vector2:
 	var result = curve.sample(idx, t)
-	return aggregate_vector2(result, x_aggregation, y_aggregation)
+	return _aggregate_vector2(result, x_aggregation, y_aggregation)
 
 
 func _sample_3d(idx: int, t: float) -> Vector3:
 	return curve.sample(idx, t)
 
 
-func aggregate_scalar(vector: Vector3, method: AggregationMethod):
+func _aggregate_scalar(vector: Vector3, method: AggregationMethod):
 	match method:
 		AggregationMethod.X: return vector.x
 		AggregationMethod.Y: return vector.y
@@ -36,7 +51,7 @@ func aggregate_scalar(vector: Vector3, method: AggregationMethod):
 		AggregationMethod.AVERAGE, _: return (vector.x + vector.y + vector.z)/3
 
 
-func aggregate_vector2(vector: Vector3, x_method: AggregationMethod, y_method: AggregationMethod) -> Vector2:
+func _aggregate_vector2(vector: Vector3, x_method: AggregationMethod, y_method: AggregationMethod) -> Vector2:
 	var x: float = 0
 	match x_method:
 		AggregationMethod.X: x = vector.x

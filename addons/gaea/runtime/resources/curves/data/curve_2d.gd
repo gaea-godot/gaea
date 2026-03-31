@@ -1,15 +1,23 @@
 @tool
 class_name GaeaCurve2D
 extends GaeaCurve
+## A [GaeaCurve] wrapper for Godot's builtin [Curve2D] class.
 
 enum AggregationMethod
 {
-	X, Y, Z,
+	## Use just the X value.
+	X,
+	## Use just the Y value.
+	Y,
+	## Use the average of the X and Y values.
 	AVERAGE,
 }
 
+## The [Curve2D] to use for sampling.
 @export var curve: Curve2D
+## The [enum AggregationMethod] to use when populating [method GaeaCurve.sample] results.
 @export var scalar_aggregation: AggregationMethod = AggregationMethod.X
+## Default value when populating [method sample_3d] results.
 @export var z_default: float = 0
 
 
@@ -18,7 +26,6 @@ func _sample(offset: float) -> float:
 	match scalar_aggregation:
 		AggregationMethod.X: return result.x
 		AggregationMethod.Y: return result.y
-		AggregationMethod.Z: return z_default
 		AggregationMethod.AVERAGE, _: return (result.x + result.y)/2
 
 

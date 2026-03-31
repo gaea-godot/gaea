@@ -1,9 +1,13 @@
 @tool
 class_name GaeaCurveScalar
 extends GaeaCurve
+## A [GaeaCurve] wrapper for Godot's builtin [Curve] class.
 
+## The [Curve] to use for sampling.
 @export var curve: Curve
+## Default value when populating [method GaeaCurve.sample_2d] and [method GaeaCurve.sample_3d] results.
 @export var y_default: float = 0
+## Default value when populating [method GaeaCurve.sample_3d] results.
 @export var z_default: float = 0
 
 
