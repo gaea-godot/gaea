@@ -45,7 +45,7 @@ func aggregate_vector2(vector: Vector3, x_method: AggregationMethod, y_method: A
 		AggregationMethod.AVERAGE: x = (vector.x + vector.z)/2
 
 	var y: float = 0
-	match x_method:
+	match y_method:
 		AggregationMethod.X: y = vector.x
 		AggregationMethod.Y: y = vector.y
 		AggregationMethod.Z: y = vector.z

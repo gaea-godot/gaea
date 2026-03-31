@@ -1,5 +1,5 @@
 @tool
-@icon("../../../assets/types/material.svg")
+@icon("Curve")
 @abstract
 class_name GaeaCurve
 extends Resource

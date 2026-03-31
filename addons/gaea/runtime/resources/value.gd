@@ -275,7 +275,6 @@ static func get_default_slot_icon(type: Type) -> Texture2D:
 			return load("uid://daasmk1v2rpcm")
 		Type.TEXTURE:
 			return load("uid://ccqq5l0ruur37")
-
 		# Dictionary types
 		Type.SAMPLE:
 			return load("uid://yo87adchyr3w")
