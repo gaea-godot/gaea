@@ -134,14 +134,17 @@ func _on_enum_value_changed(enum_idx: int, _option_value: int) -> void:
 
 func _get_arguments_list() -> Array[StringName]:
 	match get_enum_selection(0): # Faloff Area
-		FalloffArea.CustomArea: return [&"position", &"size", &"curve", &"start", &"end"]
-		_: return [&"start", &"curve", &"end"]
+		FalloffArea.CustomArea: return [&"position", &"size", &"curve", &"restrict_x", &"restrict_y", &"restrict_z", &"start", &"end"]
+		_: return [&"curve", &"restrict_x", &"restrict_y", &"restrict_z", &"start", &"end"]
 
 
 func _get_argument_type(arg_name: StringName) -> GaeaValue.Type:
 	match arg_name:
 		&"position", &"size": return GaeaValue.Type.VECTOR3
 		&"curve": return GaeaValue.Type.CURVE
+		&"restrict_x": return GaeaValue.Type.BOOLEAN
+		&"restrict_y": return GaeaValue.Type.BOOLEAN
+		&"restrict_z": return GaeaValue.Type.BOOLEAN
 		&"start", &"end", _: return GaeaValue.Type.FLOAT
 
 
@@ -150,6 +153,9 @@ func _get_argument_default_value(arg_name: StringName) -> Variant:
 		&"position": return Vector3.ZERO
 		&"area": return Vector3.ONE
 		&"curve": return null
+		&"restrict_x": return false
+		&"restrict_y": return false
+		&"restrict_z": return false
 		&"start": return 0.5
 		&"end": return 1.0
 	return super(arg_name)
@@ -167,6 +173,9 @@ func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> GaeaValu
 	var start: float = _get_arg(&"start", pouch) as float
 	var end: float = _get_arg(&"end", pouch) as float
 	var curve: GaeaCurve = _get_arg(&"curve", pouch) as GaeaCurve
+	var restrict_x: bool = _get_arg(&"restrict_x", pouch) as bool
+	var restrict_y: bool = _get_arg(&"restrict_y", pouch) as bool
+	var restrict_z: bool = _get_arg(&"restrict_z", pouch) as bool
 	var result: GaeaValue.Sample = GaeaValue.Sample.new()
 
 	var area: AABB
@@ -196,5 +205,9 @@ func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> GaeaValu
 	for x in _get_axis_range(Vector3i.AXIS_X, area):
 		for y in _get_axis_range(Vector3i.AXIS_Y, area):
 			for z in _get_axis_range(Vector3i.AXIS_Z, area):
-				result.set_xyz(x, y, z, sampler.sample(Vector3i(x, y, z)))
+				var sample_vector: Vector3i = Vector3i.ZERO
+				sample_vector.x = sampler.center.x if restrict_x else x
+				sample_vector.y = sampler.center.y if restrict_y else y
+				sample_vector.z = sampler.center.z if restrict_z else z
+				result.set_xyz(x, y, z, sampler.sample(sample_vector))
 	return result
