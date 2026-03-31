@@ -1,6 +1,6 @@
 @tool
-extends GaeaCurve
 class_name GaeaCurve2D
+extends GaeaCurve
 
 enum AggregationMethod
 {

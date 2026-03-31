@@ -1,6 +1,6 @@
 @tool
-extends GaeaCurve
 class_name GaeaCurveScalar
+extends GaeaCurve
 
 @export var curve: Curve
 @export var y_default: float = 0
