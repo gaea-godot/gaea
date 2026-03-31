@@ -33,14 +33,16 @@ enum FalloffShape {
 @abstract
 class FalloffSampler:
 	var area: AABB
+	var curve: GaeaCurve
 	var start: float
 	var end: float
 	var pos: Vector3
 	var center: Vector3
 	var radii: Vector3
 
-	func _init(_area: AABB, _start: float, _end: float):
+	func _init(_area: AABB, _curve: GaeaCurve, _start: float, _end: float):
 		area = _area
+		curve = _curve
 		start = _start
 		end = _end
 		pos = area.position
@@ -58,10 +60,14 @@ class FalloffSampler:
 	func sample(vector: Vector3) -> float:
 		var value: float = clampf(_get_sample(vector), 0.0, 1.0)
 		var range_clamped: float = clampf(value, start if start < end else end, end if end > start else start)
+
+		var offset: float
 		match range_clamped:
-			start: return 1.0
-			end: return 0.0
-			_: return smoothstep(1.0, 0.0, inverse_lerp(start, end, value))
+			start: offset = 1.0
+			end: offset = 0.0
+			_: offset = smoothstep(1.0, 0.0, inverse_lerp(start, end, value))
+
+		return offset if not curve else curve.sample(offset)
 
 	@abstract
 	func _get_sample(_vector:Vector3) -> float
@@ -128,13 +134,14 @@ func _on_enum_value_changed(enum_idx: int, _option_value: int) -> void:
 
 func _get_arguments_list() -> Array[StringName]:
 	match get_enum_selection(0): # Faloff Area
-		FalloffArea.CustomArea: return [&"position", &"size", &"start", &"end"]
-		_: return [&"start", &"end"]
+		FalloffArea.CustomArea: return [&"position", &"size", &"curve", &"start", &"end"]
+		_: return [&"start", &"curve", &"end"]
 
 
 func _get_argument_type(arg_name: StringName) -> GaeaValue.Type:
 	match arg_name:
 		&"position", &"size": return GaeaValue.Type.VECTOR3
+		&"curve": return GaeaValue.Type.CURVE
 		&"start", &"end", _: return GaeaValue.Type.FLOAT
 
 
@@ -142,6 +149,7 @@ func _get_argument_default_value(arg_name: StringName) -> Variant:
 	match arg_name:
 		&"position": return Vector3.ZERO
 		&"area": return Vector3.ONE
+		&"curve": return null
 		&"start": return 0.5
 		&"end": return 1.0
 	return super(arg_name)
@@ -158,6 +166,7 @@ func _get_output_port_type(_output_name: StringName) -> GaeaValue.Type:
 func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> GaeaValue.Sample:
 	var start: float = _get_arg(&"start", pouch) as float
 	var end: float = _get_arg(&"end", pouch) as float
+	var curve: GaeaCurve = _get_arg(&"curve", pouch) as GaeaCurve
 	var result: GaeaValue.Sample = GaeaValue.Sample.new()
 
 	var area: AABB
@@ -176,13 +185,13 @@ func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> GaeaValu
 	var sampler: FalloffSampler
 	match get_enum_selection(1): # Falloff Shape
 		FalloffShape.SQUARE:
-			sampler = FalloffSamplerSquare.new(area, start, end)
+			sampler = FalloffSamplerSquare.new(area, curve, start, end)
 		FalloffShape.ROUNDED_SQUARE:
-			sampler = FalloffSamplerRoundedSquare.new(area, start, end)
+			sampler = FalloffSamplerRoundedSquare.new(area, curve, start, end)
 		FalloffShape.CIRCLE:
-			sampler = FalloffSamplerCircle.new(area, start, end)
+			sampler = FalloffSamplerCircle.new(area, curve, start, end)
 		FalloffShape.SQUIRCLE:
-			sampler = FalloffSamplerSquircle.new(area, start, end)
+			sampler = FalloffSamplerSquircle.new(area, curve, start, end)
 
 	for x in _get_axis_range(Vector3i.AXIS_X, area):
 		for y in _get_axis_range(Vector3i.AXIS_Y, area):
