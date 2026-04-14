@@ -26,7 +26,7 @@ func _sample(offset: float) -> float:
 	match scalar_aggregation:
 		AggregationMethod.X: return result.x
 		AggregationMethod.Y: return result.y
-		AggregationMethod.AVERAGE, _: return (result.x + result.y)/2
+		AggregationMethod.AVERAGE, _: return (result.x + result.y) * 0.5
 
 
 func _sample_2d(idx: int, t: float) -> Vector2:
