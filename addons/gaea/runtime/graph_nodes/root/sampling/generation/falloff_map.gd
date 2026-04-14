@@ -189,7 +189,6 @@ func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> GaeaValu
 			var size: Vector3 = _get_arg(&"size", pouch)
 			area = AABB(position, size)
 
-	prints("area:", area, "( FaloffArea:", get_enum_selection(0), ")")
 
 	var sampler: FalloffSampler
 	match get_enum_selection(1): # Falloff Shape
