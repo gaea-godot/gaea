@@ -47,7 +47,7 @@ class FalloffSampler:
 		end = _end
 		pos = area.position
 		center = area.get_center()
-		radii = area.size / 2
+		radii = area.size * 0.5
 		_on_init()
 
 	func _on_init():
