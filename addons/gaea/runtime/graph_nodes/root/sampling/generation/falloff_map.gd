@@ -133,9 +133,14 @@ func _on_enum_value_changed(enum_idx: int, _option_value: int) -> void:
 
 
 func _get_arguments_list() -> Array[StringName]:
+	var list: Array[StringName]
 	match get_enum_selection(0): # Faloff Area
-		FalloffArea.CUSTOM_AREA: return [&"position", &"size", &"curve", &"restrict_x", &"restrict_y", &"restrict_z", &"start", &"end"]
-		_: return [&"curve", &"restrict_x", &"restrict_y", &"restrict_z", &"start", &"end"]
+		FalloffArea.CUSTOM_AREA:
+			list = [&"position", &"size"]
+		_:
+			list = []
+	list.append_array([&"curve", &"restrict_x", &"restrict_y", &"restrict_z", &"start", &"end"])
+	return list
 
 
 func _get_argument_type(arg_name: StringName) -> GaeaValue.Type:
