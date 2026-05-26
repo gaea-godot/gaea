@@ -15,15 +15,17 @@ enum AggregationMethod
 
 ## The [Curve2D] to use for sampling.
 @export var curve: Curve2D
+
+@export_category("Conversion to 1D Sample")
 ## The [enum AggregationMethod] to use when populating [method GaeaCurve.sample] results.
-@export var scalar_aggregation: AggregationMethod = AggregationMethod.X
+@export var x_aggregation_1D: AggregationMethod = AggregationMethod.X
 ## Default value when populating [method sample_3d] results.
-@export var z_default: float = 0
+@export var z_default_3D: float = 0
 
 
 func _sample(offset: float) -> float:
 	var result = curve.sample(0, offset)
-	match scalar_aggregation:
+	match x_aggregation_1D:
 		AggregationMethod.X: return result.x
 		AggregationMethod.Y: return result.y
 		AggregationMethod.AVERAGE, _: return (result.x + result.y) * 0.5
@@ -35,4 +37,4 @@ func _sample_2d(idx: int, t: float) -> Vector2:
 
 func _sample_3d(idx: int, t: float) -> Vector3:
 	var result = curve.sample(idx, t)
-	return Vector3(result.x, result.y, z_default)
+	return Vector3(result.x, result.y, z_default_3D)

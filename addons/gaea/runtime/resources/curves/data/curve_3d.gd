@@ -21,22 +21,24 @@ enum AggregationMethod
 
 ## The [Curve3D] to use for sampling.
 @export var curve: Curve3D
+
+@export_category("Conversion to 2D and 1D Sample")
 ## The [enum AggregationMethod] to use when populating [method GaeaCurve.sample] results.
-@export var scalar_aggregation: AggregationMethod = AggregationMethod.X
+@export var x_aggregation_1D: AggregationMethod = AggregationMethod.X
 ## The [enum AggregationMethod] to use when populating the x value of [method GaeaCurve.sample_2d] results.
-@export var x_aggregation: AggregationMethod = AggregationMethod.X
+@export var x_aggregation_2D: AggregationMethod = AggregationMethod.X
 ## The [enum AggregationMethod] to use when populating the y value of [method GaeaCurve.sample_2d] results.
-@export var y_aggregation: AggregationMethod = AggregationMethod.Y
+@export var y_aggregation_2D: AggregationMethod = AggregationMethod.Y
 
 
 func _sample(offset: float) -> float:
 	var result = curve.sample(0, offset)
-	return _aggregate_scalar(result, scalar_aggregation)
+	return _aggregate_scalar(result, x_aggregation_1D)
 
 
 func _sample_2d(idx: int, t: float) -> Vector2:
 	var result = curve.sample(idx, t)
-	return _aggregate_vector2(result, x_aggregation, y_aggregation)
+	return _aggregate_vector2(result, x_aggregation_2D, y_aggregation_2D)
 
 
 func _sample_3d(idx: int, t: float) -> Vector3:
