@@ -13,7 +13,7 @@ If you find any bugs, or you have an idea for a feature, [open an issue](https:/
 
 All code changes should be made in a personal fork and requested through pull requests. This means Gaea follows the [Github Flow](https://docs.github.com/en/get-started/using-github/github-flow), and you'll have to follow it aswell. In addition to this, PRs to Gaea have to follow a few rules:
 
-- PRs should mainly fix one issue. It's better to make a few smaller PRs than one big one. If a big one is necessary, please discuss it before on the related issue, the Discussions page, or on the linked Discord server.
+- PRs should mainly fix one issue. It's better to make a few smaller PRs than one big one. If a big one is necessary, please discuss it before on the related issue or on the Discussions page.
 - They have to pass a few unit tests and a formatting check (which means code added to Gaea has to roughly follow the [GDScript style guide](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_styleguide.html)).
 - When updating your forks with upstream changes, you'll have to use [rebase](https://git-scm.com/book/en/v2/Git-Branching-Rebasing).
 - Document your code, using [documentation comments](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_documentation_comments.html).
