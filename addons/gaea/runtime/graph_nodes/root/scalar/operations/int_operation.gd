@@ -14,8 +14,9 @@ func _get_output_port_type(_output_name: StringName) -> GaeaValue.Type:
 
 
 func _get_description() -> String:
-	if get_tree_name() == "IntOp" and not is_instance_valid(get_meta(&"_gaea_graph_node")):
-		return "Operation between 2 [code]int[/code] numbers."
+	if get_tree_name() == "IntOp":
+		if not (has_meta(&"_gaea_graph_node") and is_instance_valid(get_meta(&"_gaea_graph_node"))):
+			return "Operation between 2 [code]int[/code] numbers."
 
 	match get_enum_selection(0):
 		Operation.ADD:

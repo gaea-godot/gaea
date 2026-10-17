@@ -11,8 +11,9 @@ func _get_title() -> String:
 
 
 func _get_description() -> String:
-	if get_tree_name() == "SampleOp" and not is_instance_valid(get_meta(&"_gaea_graph_node")):
-		return "Operation between a sample grid and a [code]float[/code] number."
+	if get_tree_name() == "SampleOp":
+		if not (has_meta(&"_gaea_graph_node") and is_instance_valid(get_meta(&"_gaea_graph_node"))):
+			return "Operation between a sample grid and a [code]float[/code] number."
 
 	match get_enum_selection(0):
 		Operation.ADD:
