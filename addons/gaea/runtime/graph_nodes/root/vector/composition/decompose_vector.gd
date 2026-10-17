@@ -25,7 +25,7 @@ func _get_argument_display_name(_arg_name: StringName) -> String:
 
 
 func _get_argument_type(_arg_name: StringName) -> GaeaValue.Type:
-	return get_enum_selection(0) as GaeaValue.Type
+	return _get_vector_type() as GaeaValue.Type
 
 
 #endregion
@@ -33,7 +33,7 @@ func _get_argument_type(_arg_name: StringName) -> GaeaValue.Type:
 
 #region Outputs
 func _get_output_ports_list() -> Array[StringName]:
-	match get_enum_selection(0):
+	match _get_vector_type():
 		VectorType.VECTOR2, VectorType.VECTOR2I:
 			return [&"x", &"y"]
 		VectorType.VECTOR3, VectorType.VECTOR3I:
@@ -57,8 +57,8 @@ func _get_tree_items() -> Array[GaeaNodeResource]:
 
 	for i in VectorType.values():
 		var item: GaeaNodeResource = get_script().new()
-		item.set_default_enum_value_override(0, i)
-		item.set_tree_name_override(_get_enum_option_display_name(0, i) + "Decompose")
+		item.set_default_argument_value_override(&"type", i)
+		item.set_tree_name_override(_get_vector_type_name(i) + "Decompose")
 		array.append(item)
 
 	return array

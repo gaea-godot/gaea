@@ -12,7 +12,7 @@ func _get_description() -> String:
 	if get_tree_name() == "FloatOp" and not is_instance_valid(get_meta(&"_gaea_graph_node")):
 		return "Operation between 2 [code]float[/code] numbers."
 
-	match get_enum_selection(0):
+	match _get_arg_safe(&"operation", GaeaValue.Type.ENUM):
 		Operation.ADD:
 			return "Sums 2 [code]float[/code] numbers."
 		Operation.SUBTRACT:

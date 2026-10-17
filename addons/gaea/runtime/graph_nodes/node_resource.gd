@@ -19,7 +19,6 @@ extends Resource
 signal argument_list_changed
 signal argument_hint_changed(arg_name: StringName)
 signal argument_value_changed(arg_name: StringName, new_value: Variant)
-signal enum_value_changed(enum_idx: int, option_value: int)
 signal traversed(port: StringName, data: Variant, pouch: GaeaGenerationPouch)
 
 
@@ -44,7 +43,6 @@ const GAEA_MATERIAL_GRADIENT_HINT := "Resource that maps values from 0.0-1.0 to 
 #endregion
 
 @export_storage var default_value_overrides: Dictionary[StringName, Variant]
-@export_storage var default_enum_value_overrides: Dictionary[int, int]
 
 ## List of all connections to this node (left side). Doesn't include connections [i]from[/i] this node.[br]
 ## The dictionaries contain the following properties:
@@ -62,8 +60,6 @@ var graph: GaeaGraph
 ## A Dictionary holding the values of the arguments
 ## where the keys are their names.
 var arguments: Dictionary
-## All the currently-selected values for the enums.
-var enum_selections: Array
 ## An additional value added to the generation's seed to prevent
 ## duplicates of the same node from having the same randomness. (See [member GaeaGenerator.seed]).
 var salt: int = 0
@@ -148,16 +144,6 @@ func clear_default_argument_value_override(arg_name: StringName) -> void:
 	default_value_overrides.erase(arg_name)
 
 
-## Override the default value of the enum at [param enum_idx].
-func set_default_enum_value_override(enum_idx: int, value: int) -> void:
-	default_enum_value_overrides.set(enum_idx, value)
-
-
-## Clear the overridden default value of the enum at [param enum_idx].
-func clear_default_enum_value_override(enum_idx: int) -> void:
-	default_enum_value_overrides.erase(enum_idx)
-
-
 ## Public version of [method _get_tree_items]. Prefer to override that method over this one.
 func get_tree_items() -> Array[GaeaNodeResource]:
 	return _get_tree_items()
@@ -182,45 +168,6 @@ func get_type() -> GaeaValue.Type:
 	if not _get_output_ports_list().is_empty():
 		return _get_output_port_type(_get_output_ports_list().back())
 	return GaeaValue.Type.NULL
-
-
-## Public version of [method _get_enums_count]. Prefer to override that method over this one.
-func get_enums_count() -> int:
-	return _get_enums_count()
-
-
-## Public version of [method _get_enum_title]. Prefer to override that method over this one.
-func get_enum_title(enum_idx: int) -> String:
-	return _get_enum_title(enum_idx)
-
-
-## Public version of [method _get_enum_description]. Prefer to override that method over this one.
-func get_enum_description(enum_idx: int) -> String:
-	return _get_enum_description(enum_idx)
-
-
-## Public version of [method _get_enum_options]. Prefer to override that method over this one.
-func get_enum_options(idx: int) -> Dictionary:
-	return _get_enum_options(idx)
-
-
-## Returns the currently selected option for the enum at [param idx].
-func get_enum_selection(idx: int) -> int:
-	return get_enum_default_value(idx) if enum_selections.size() <= idx else enum_selections[idx]
-
-
-## Public version of [method _get_enum_option_display_name]. Prefer to override that method over this one.
-func get_enum_option_display_name(enum_idx: int, option_value: int) -> String:
-	return _get_enum_option_display_name(enum_idx, option_value)
-
-
-func get_enum_option_icon(enum_idx: int, option_value: int) -> Texture:
-	return _get_enum_option_icon(enum_idx, option_value)
-
-
-## Public version of [method _get_enum_default_value]. Prefer to override that method over this one.
-func get_enum_default_value(enum_idx: int) -> int:
-	return default_enum_value_overrides.get(enum_idx, _get_enum_default_value(enum_idx))
 
 
 ## Public version of [method _get_arguments_list]. Prefer to override that method over this one.
@@ -337,6 +284,7 @@ func _get_tree_items() -> Array[GaeaNodeResource]:
 
 ## Override this method to add enum properties on the top of the nodes for things like changing
 ## operations or types.
+## @deprecated: Enums are now arguments.
 func _get_enums_count() -> int:
 	return 0
 
@@ -344,18 +292,21 @@ func _get_enums_count() -> int:
 ## Override this method if you want to change the display name for the enum in the documentation.[br][br]
 ## Defining this method is [b]optional[/b].
 ## If not defined, the name will be Enum # followed by the index + 1
+## @deprecated: Enums are now arguments.
 func _get_enum_title(enum_idx: int) -> String:
 	return "Enum #%d" % (enum_idx + 1)
 
 
 ## Override this method if you want to change the description for the enum in the documentation.[br][br]
 ## Defining this method is [b]optional[/b].
+## @deprecated: Enums are now arguments.
 func _get_enum_description(enum_idx: int) -> String:
 	return "There is currently no description for the enum #%d." % (enum_idx + 1)
 
 
 ## Override this method to define the options available for the added enums.[br][br]
 ## The returned [Dictionary] should be [code]{String: int}[/code]. Built-in enums can be used directly.
+## @deprecated: Enums are now arguments.
 func _get_enum_options(_idx: int) -> Dictionary:
 	return {}
 
@@ -363,6 +314,7 @@ func _get_enum_options(_idx: int) -> Dictionary:
 ## Override this method if you want to change the display name for the options in the added enums.[br][br]
 ## Defining this method is [b]optional[/b].
 ## If not defined, the name will be [code]_get_enum_options(enum_idx).find_key(option_value).capitalize()[/code].
+## @deprecated: Enums are now arguments.
 func _get_enum_option_display_name(enum_idx: int, option_value: int) -> String:
 	var options := _get_enum_options(enum_idx)
 	var key = options.find_key(option_value)
@@ -373,13 +325,17 @@ func _get_enum_option_display_name(enum_idx: int, option_value: int) -> String:
 
 ## Override this method if you want to add icons to the options in the added enums.[br][br]
 ## Defining this method is [b]optional[/b].
+## @deprecated: Enums are now arguments.
 func _get_enum_option_icon(_enum_idx: int, _option_value: int) -> Texture:
 	return null
 
 
 ## Override this method to define the default value of the added enums.[br][br]
 ## Defining this method is [b]optional[/b].
+## @deprecated: Enums are now arguments.
 func _get_enum_default_value(enum_idx: int) -> int:
+	if _get_enums_count() == 0:
+		return 0
 	return _get_enum_options(enum_idx).values().front()
 
 
@@ -481,18 +437,9 @@ func _get_custom_saved_data() -> Dictionary[StringName, Variant]:
 	return {}
 
 
-func set_enum_value(enum_idx: int, option_value: int) -> void:
-	if enum_idx >= enum_selections.size():
-		for idx in _get_enums_count():
-			enum_selections.append(get_enum_default_value(idx))
-
-	enum_selections.set(enum_idx, option_value)
-	enum_value_changed.emit(enum_idx, option_value)
-	_on_enum_value_changed(enum_idx, option_value)
-
-
 ## Called when an enum is changed in the editor. When overridden,
 ## [method super] should [b]always[/b] be called at the head of the function.
+## @deprecated: Enums are now arguments. Use [method _on_argument_value_changed] instead.
 func _on_enum_value_changed(_enum_idx: int, _option_value: int) -> void:
 	return
 
@@ -503,7 +450,7 @@ func set_argument_value(arg_name: StringName, new_value: Variant) -> void:
 	_on_argument_value_changed(arg_name, new_value)
 
 
-## Called when an enum is changed in the editor. Does nothing by default, but can be used to call
+## Called when an argument is changed in the editor. Does nothing by default, but can be used to call
 ## [method notify_argument_list_changed] to rebuild the node.
 func _on_argument_value_changed(_arg_name: StringName, _new_value: Variant) -> void:
 	return
@@ -511,35 +458,54 @@ func _on_argument_value_changed(_arg_name: StringName, _new_value: Variant) -> v
 
 #region Args
 ## Returns the value of the argument of [param name]. Pass in [param graph] to allow overriding with input slots.[br]
-## [param settings] is used for values of the type Data or Map. (See [enum GaeaValue.Type]).
+## [param settings] is used for values of the type Data or Map. (See [enum GaeaValue.Type]).[br]
+## If calling this outside of [method _get_data], prefer to use [method _get_arg_safe].
 func _get_arg(arg_name: StringName, pouch: GaeaGenerationPouch) -> Variant:
-	_log_arg(arg_name)
+	if is_instance_valid(graph) and is_instance_valid(pouch):
+		_log_arg(arg_name)
+
+	if not is_instance_valid(pouch) or not GaeaValue.is_wireable(get_argument_type(arg_name)):
+		return arguments.get(arg_name, get_argument_default_value(arg_name))
 
 	var connection := _get_argument_connection(arg_name)
-	if not connection.is_empty():
-		var connected_id = connection.from_node
-		var connected_node = graph.get_node(connected_id)
-		var connected_output = connected_node.connection_idx_to_output(connection.from_port)
-		var connected_data = connected_node.traverse(connected_output, pouch)
-		if connected_data.has("value"):
-			var connected_value = connected_data.get("value")
-			var connected_type: GaeaValue.Type = connected_node.get_output_port_type(
-				connected_output
-			)
-			if connected_data.has("type"):
-				connected_type = connected_data.get("type")
+	if connection.is_empty():
+		return arguments.get(arg_name, get_argument_default_value(arg_name))
 
-			return GaeaValueCast.cast_value(
-				connected_type, _get_argument_type(arg_name), connected_value
-			)
-
+	var connected_id = connection.from_node
+	var connected_node = graph.get_node(connected_id)
+	var connected_output = connected_node.connection_idx_to_output(connection.from_port)
+	var connected_data = connected_node.traverse(connected_output, pouch)
+	if not connected_data.has("value"):
 		_log_error(
 			"Could not get data from previous node, using default value instead.",
 			connected_id
 		)
 		return get_argument_default_value(arg_name)
 
-	return arguments.get(arg_name, get_argument_default_value(arg_name))
+	var connected_value = connected_data.get("value")
+	var connected_type: GaeaValue.Type = connected_node.get_output_port_type(
+		connected_output
+	)
+	if connected_data.has("type"):
+		connected_type = connected_data.get("type")
+
+	return GaeaValueCast.cast_value(
+		connected_type, _get_argument_type(arg_name), connected_value
+	)
+
+
+## Sometimes calling [method _get_arg] can cause problems with repeating code, especially when
+## using arguments which change the argument list. This is a safer version of that method,
+## where you have to explicitly define [param type] and [param default_value] and can't obtain values from connections.[br]
+## Inside [method _get_data], use [method _get_arg]. Outside of that method, [method _get_arg_safe] is preferred.[br]
+## If [param default_value] is [code]null[/code], uses [method GaeaValue.get_default_value] is used. Note
+## that [member default_value_overrides] is still taken into consideration and will override [param default_value].
+func _get_arg_safe(arg_name: StringName, type: GaeaValue.Type, default_value: Variant = null) -> Variant:
+	if default_value == null:
+		default_value = GaeaValue.get_default_value(type)
+
+	return arguments.get(arg_name, default_value_overrides.get(arg_name, default_value))
+
 #endregion
 
 
@@ -631,6 +597,9 @@ func connection_idx_to_argument(argument_idx: int) -> StringName:
 
 
 func _get_argument_connection(arg_name: StringName) -> Dictionary:
+	if not GaeaValue.is_wireable(get_argument_type(arg_name)):
+		return {}
+
 	var idx = _get_arguments_list().filter(_filter_has_input).find(arg_name)
 	if idx == -1:
 		return {}
@@ -670,6 +639,7 @@ func _log_execute(message: String, area: AABB) -> void:
 	message = message.strip_edges()
 	message = message if message == "" else message + " "
 	graph.log(GaeaGraph.Log.EXECUTE, "%sArea %s on %s" % [message, area, _get_title()])
+
 
 # If enabled in [member GaeaGraph.logging], log the time it took to generate. (See [enum GaeaGraph.Log]).
 func _log_time(message: String, time: int) -> void:
@@ -841,4 +811,3 @@ func load_save_data(saved_data: Dictionary) -> void:
 func _load_save_data(saved_data: Dictionary) -> void:
 	salt = saved_data.get(&"salt", 0)
 	arguments = saved_data.get(&"arguments", {})
-	enum_selections = saved_data.get(&"enums", [])

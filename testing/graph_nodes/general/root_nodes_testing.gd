@@ -125,3 +125,30 @@ func test_node_scene() -> void:
 			.is_not_null()\
 			.override_failure_message("_get_scene at [b]%s[/b] isn't a PackedScene." % _get_node_path(node))\
 			.is_instanceof(PackedScene)
+
+
+func test_enum_arguments() -> void:
+	for node in nodes_in_root:
+		for argument in node.get_arguments_list():
+			if not node.get_argument_type(argument) == GaeaValue.Type.ENUM:
+				continue
+
+			var options = node.get_argument_hint(argument).get("options", "")
+			assert_int(typeof(options))\
+					.override_failure_message("Options for enum argument [b]%s[/b] are of an invalid type." % argument)\
+					.append_failure_message("Node at [b]%s[/b]." % _get_node_path(node))\
+					.is_in([TYPE_STRING, TYPE_DICTIONARY])
+
+			if is_failure():
+				continue
+			match typeof(options):
+				TYPE_STRING:
+					assert_str(options)\
+							.override_failure_message("Enum argument [b]%s[/b] has no options." % argument)\
+							.append_failure_message("Node at [b]%s[/b]." % _get_node_path(node))\
+							.is_not_empty()
+				TYPE_DICTIONARY:
+					assert_dict(options)\
+							.override_failure_message("Enum argument [b]%s[/b] has no options." % argument)\
+							.append_failure_message("Node at [b]%s[/b]." % _get_node_path(node))\
+							.is_not_empty()

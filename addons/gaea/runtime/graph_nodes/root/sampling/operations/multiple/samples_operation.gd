@@ -38,7 +38,7 @@ func _get_description() -> String:
 	if get_tree_name() == "SamplesOp" and not is_instance_valid(get_meta(&"_gaea_graph_node")):
 		return "Operation between 2 sample grids."
 
-	match get_enum_selection(0):
+	match _get_arg_safe(&"operation", GaeaValue.Type.ENUM):
 		Operation.ADD:
 			return "Adds all cells in [param B] to all cells in [param A]."
 		Operation.SUBTRACT:
@@ -62,43 +62,43 @@ func _get_tree_items() -> Array[GaeaNodeResource]:
 		var output_name: String = operation_definitions[operation].output
 		var tree_name := "%sSamples (%s)" % [operation_name, output_name]
 		item.set_tree_name_override(tree_name)
-		item.set_default_enum_value_override(0, operation)
+		item.set_default_argument_value_override(&"operation", operation)
 		items.append(item)
 
 	return items
 
 
-func _get_enums_count() -> int:
-	return 1
-
-
-func _get_enum_options(_idx: int) -> Dictionary:
-	var options: Dictionary = {}
-
-	for operation in operation_definitions.keys():
-		options.set(Operation.find_key(operation), operation)
-
-	return options
-
-
 func _get_arguments_list() -> Array[StringName]:
-	return operation_definitions.get(get_enum_selection(0)).args
+	var array: Array[StringName] = [&"operation"]
+	array.append_array(operation_definitions.get(_get_arg_safe(&"operation", GaeaValue.Type.ENUM)).args)
+	return array
 
 
 func _get_argument_type(arg_name: StringName) -> GaeaValue.Type:
-	if arg_name == &"weight":
-		return GaeaValue.Type.FLOAT
-	return GaeaValue.Type.SAMPLE
+	match arg_name:
+		&"operation":
+			return GaeaValue.Type.ENUM
+		&"weight":
+			return GaeaValue.Type.FLOAT
+		_:
+			return GaeaValue.Type.SAMPLE
 
 
 func _get_argument_hint(arg_name: StringName) -> Dictionary[String, Variant]:
+	if arg_name == &"operation":
+		var options: Dictionary = {}
+		for operation in operation_definitions.keys():
+			options.set(Operation.find_key(operation), operation)
+		return {"options": options}
+
 	if arg_name == &"weight":
 		return {"min": 0.0, "max": 1.0}
 	return super(arg_name)
 
 
-func _on_enum_value_changed(_enum_idx: int, _option_value: int) -> void:
-	notify_argument_list_changed()
+func _on_argument_value_changed(arg_name: StringName, _new_value: Variant) -> void:
+	if arg_name == &"operation":
+		notify_argument_list_changed()
 
 
 func _get_output_ports_list() -> Array[StringName]:
@@ -110,11 +110,11 @@ func _get_output_port_type(_output_name: StringName) -> GaeaValue.Type:
 
 
 func _get_output_port_display_name(_output_name: StringName) -> String:
-	return operation_definitions[get_enum_selection(0)].output
+	return operation_definitions[_get_arg_safe(&"operation", GaeaValue.Type.ENUM)].output
 
 
 func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> GaeaValue.Sample:
-	var operation: Operation = get_enum_selection(0) as Operation
+	var operation: Operation = _get_arg(&"operation", pouch) as Operation
 	var a_grid: GaeaValue.Sample = _get_arg(&"a", pouch)
 	var b_grid: GaeaValue.Sample = _get_arg(&"b", pouch)
 	var result: GaeaValue.Sample = GaeaValue.Sample.new()

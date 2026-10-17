@@ -115,9 +115,10 @@ metadata/_custom_type_script = "uid://3qsmwhn2sk47"
 script = ExtResource("5_a3tep")
 layers = Array[ExtResource("4_l0sp8")]([SubResource("Resource_cvc88"), SubResource("Resource_hvaua"), SubResource("Resource_nmtgh")])
 preview_seed = 3588446568
+preview_size_preset = 5
 preview_world_size = Vector3i(64, 64, 1)
 preview_chunk_size = Vector3i(64, 64, 1)
-save_version = 5
+save_version = 6
 _connections = Array[StringName]([&"4-0-2-1", &"23-0-21-1", &"28-0-21-0", &"31-0-25-1", &"25-0-27-0", &"30-0-6-1", &"26-0-7-1", &"29-0-15-1", &"15-0-16-0", &"27-0-5-1", &"22-0-5-2", &"8-0-25-0", &"9-0-8-0", &"9-0-7-0", &"10-0-15-0", &"11-0-12-0", &"12-0-5-0", &"24-0-13-0", &"2-0-11-0", &"3-0-24-0", &"3-0-2-0", &"14-0-22-0", &"16-0-22-1", &"21-0-22-2", &"9-0-1-0", &"1-0-6-0", &"13-0-9-0", &"7-0-27-1", &"6-0-27-2", &"20-0-0-1", &"0-0-14-0", &"17-0-18-0", &"18-0-19-0", &"19-0-0-0", &"3-0-17-0", &"18-0-28-0", &"13-0-10-0"])
 _node_data = Dictionary[int, Dictionary]({
 0: {
@@ -144,6 +145,7 @@ _node_data = Dictionary[int, Dictionary]({
 &"arguments": {
 &"CATEGORY_DIRECTION_CHANCES": false,
 &"CATEGORY_WALKER_CHANCE": false,
+&"axis": 0,
 &"bigger_room_chance": 15,
 &"bigger_room_size_range": {
 "max": 3.0,
@@ -158,7 +160,6 @@ _node_data = Dictionary[int, Dictionary]({
 &"rotate_90_weight": 40,
 &"starting_position": Vector3i(40, 22, 0)
 },
-&"enums": [0],
 &"position": Vector2(-1340, 40),
 &"salt": 2719450087,
 &"type": 0,
@@ -325,7 +326,9 @@ Vector3i(0, 0, 0): false
 &"uid": "uid://bjmyuomcmtwq6"
 },
 22: {
-&"enums": [0],
+&"arguments": {
+&"operation": 0
+},
 &"position": Vector2(1260, 820),
 &"salt": 1022077936,
 &"type": 0,
@@ -341,7 +344,9 @@ Vector3i(0, 0, 0): false
 &"uid": "uid://cqs1w714pbfql"
 },
 24: {
-&"enums": [2],
+&"arguments": {
+&"operation": 2
+},
 &"position": Vector2(-480, 160),
 &"salt": 1095001467,
 &"type": 0,
@@ -363,7 +368,9 @@ Vector3i(0, 0, 0): false
 &"uid": "uid://cqs1w714pbfql"
 },
 27: {
-&"enums": [0],
+&"arguments": {
+&"operation": 0
+},
 &"position": Vector2(1120, -180),
 &"salt": 1380013154,
 &"type": 0,

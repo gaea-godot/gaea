@@ -18,25 +18,27 @@ func _get_description() -> String:
 	return "Node description."
 
 
-func _get_enums_count() -> int:
-	return 1
-
-
-func _get_enum_options(idx: int) -> Dictionary:
-	return Enum1
-
-
 # List of all the arguments, preferably in &"snake_case".
 func _get_arguments_list() -> Array[StringName]:
-	return []
+	return [&"enum"]
 
 
 func _get_argument_type(arg_name: StringName) -> GaeaValue.Type:
+	if arg_name == &"enum":
+		return GaeaValue.Type.ENUM
 	return GaeaValue.Type.NULL
 
 
 func _get_argument_default_value(arg_name: StringName) -> Variant:
+	if arg_name == &"enum":
+		return Enum1.VALUE_1
 	return GaeaValue.Type.NULL
+
+
+func _get_argument_hint(arg_name: StringName) -> Dictionary[String, Variant]:
+	if arg_name == &"enum":
+		return {"options": Enum1}
+	return super(arg_name)
 
 
 # List of all the outputs, preferably in &"snake_case"

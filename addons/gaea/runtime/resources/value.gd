@@ -39,6 +39,7 @@ enum Type {
 	NEIGHBORS = 303, ## An array of offset neighbors from a center tile.
 	RULES = 304, ## Rules for each cell in an area, whether it should be activate, inactive or there's no rule.
 	VARIABLE_NAME = 305, ## Name for [GaeaNodeParameter]s.
+	ENUM = 306, ## An enum.
 }
 
 enum CoordinateFormat {
@@ -86,7 +87,7 @@ static func get_default_value(type: Type) -> Variant:
 		# Basic types
 		Type.BOOLEAN:
 			return false
-		Type.INT:
+		Type.INT, Type.ENUM:
 			return 0
 		Type.FLOAT:
 			return 0.0
@@ -296,6 +297,8 @@ static func get_editor_for_type(for_type: GaeaValue.Type) -> PackedScene:
 			return load("uid://d11yc7l6sneof")
 		GaeaValue.Type.RULES:
 			return load("uid://dy4n2a5hkaxsb")
+		GaeaValue.Type.ENUM:
+			return load("uid://cxvfo0jd720y7")
 	return load("uid://i2nwlab8rau")
 
 

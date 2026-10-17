@@ -36,9 +36,10 @@ metadata/_custom_type_script = "uid://3qsmwhn2sk47"
 script = ExtResource("2_jj1xi")
 layers = Array[ExtResource("1_iapx6")]([SubResource("Resource_eqj3q"), SubResource("Resource_iapx6"), SubResource("Resource_jj1xi"), SubResource("Resource_sjj7c"), SubResource("Resource_y51ij"), SubResource("Resource_skm7u")])
 preview_seed = 468471598
+preview_size_preset = 5
 preview_world_size = Vector3i(64, 64, 1)
 preview_chunk_size = Vector3i(64, 64, 1)
-save_version = 5
+save_version = 6
 _connections = Array[StringName]([&"1-0-0-0", &"2-0-0-1", &"3-0-0-2", &"1-0-0-3", &"2-0-0-4", &"3-0-0-5"])
 _node_data = Dictionary[int, Dictionary]({
 0: {

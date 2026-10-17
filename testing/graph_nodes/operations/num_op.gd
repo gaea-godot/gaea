@@ -16,9 +16,12 @@ func _assert_operation_result(args: Array[Variant], expected: float) -> void:
 	graph.add_node(node, Vector2i.ZERO)
 
 	node._define_rng(pouch)
-
-	for i in node.get_arguments_list().size():
-		node.set_argument_value(node.get_arguments_list()[i], args[i])
+	
+	var argument_list = node.get_arguments_list().filter(func(arg_name: StringName):
+		return arg_name != &"operation"
+	)
+	for i in argument_list.size():
+		node.set_argument_value(argument_list[i], args[i])
 	var result: float = node._get_data(&"result", pouch)
 	assert_that(result)\
 		.override_failure_message(_get_failure_message())\

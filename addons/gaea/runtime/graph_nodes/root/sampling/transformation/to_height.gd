@@ -26,7 +26,7 @@ func _get_title() -> String:
 func _get_description() -> String:
 	var desc: String = """Transforms [param reference] into a new sample grid \
 where the height of each column is determined by [param height_offset] + ([param reference] * [param displacement_intensity])."""
-	match get_enum_selection(0):
+	match _get_arg_safe(&"type", GaeaValue.Type.ENUM):
 		Type.TYPE_2D:
 			desc += "\n\nReferences all the x values of the [param reference_y] row."
 		Type.TYPE_3D:
@@ -38,34 +38,22 @@ func _get_tree_items() -> Array[GaeaNodeResource]:
 	var items: Array[GaeaNodeResource]
 	for type in Type.values():
 		var item: GaeaNodeToHeight = get_script().new()
-		item.set_tree_name_override(_get_title() + _get_enum_option_display_name(0, type))
-		item.set_default_enum_value_override(0, type)
+		item.set_tree_name_override(_get_title() + ("2D" if _get_arg_safe(&"type", GaeaValue.Type.ENUM) == Type.TYPE_2D else "3D"))
+		item.set_default_argument_value_override(&"type", type)
 		items.append(item)
 
 	return items
 
 
-func _get_enums_count() -> int:
-	return 1
-
-
-func _get_enum_options(_enum_idx: int) -> Dictionary:
-	return Type
-
-
-func _get_enum_option_display_name(_enum_idx: int, option_value: int) -> String:
-	return Type.find_key(option_value).trim_prefix("TYPE_")
-
-
-
 func _get_arguments_list() -> Array[StringName]:
-	return [&"reference", &"reference_y",
+	return [&"type", &"reference", &"reference_y",
 			&"height_offset", &"displacement_intensity",
 			&"gradient_intensity"]
 
 
 func _get_argument_type(arg_name: StringName) -> GaeaValue.Type:
 	match arg_name:
+		&"type": return GaeaValue.Type.ENUM
 		&"reference": return GaeaValue.Type.SAMPLE
 		&"gradient_intensity": return GaeaValue.Type.FLOAT
 		_: return GaeaValue.Type.INT
@@ -77,6 +65,14 @@ func _get_argument_default_value(arg_name: StringName) -> Variant:
 		&"gradient_intensity": return 1.0
 	return super(arg_name)
 
+
+func _get_argument_hint(arg_name: StringName) -> Dictionary[String, Variant]:
+	if arg_name == &"type":
+		return {
+			"options": Type,
+			"display_name_provider": func(_id: int, key: String) -> String: return key.trim_prefix("TYPE_")
+		}
+	return super(arg_name)
 
 
 func _get_output_ports_list() -> Array[StringName]:
@@ -94,7 +90,7 @@ func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> GaeaValu
 	var displacement: int = _get_arg(&"displacement_intensity", pouch)
 	var gradient_intensity: float = _get_arg(&"gradient_intensity", pouch)
 	var result: GaeaValue.Sample = GaeaValue.Sample.new()
-	var type: Type = get_enum_selection(0) as Type
+	var type: Type = _get_arg(&"type", pouch) as Type
 
 	var remap_offset: float = 0.0
 	if not is_zero_approx(gradient_intensity):

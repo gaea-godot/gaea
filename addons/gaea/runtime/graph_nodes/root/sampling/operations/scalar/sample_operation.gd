@@ -14,7 +14,7 @@ func _get_description() -> String:
 	if get_tree_name() == "SampleOp" and not is_instance_valid(get_meta(&"_gaea_graph_node")):
 		return "Operation between a sample grid and a [code]float[/code] number."
 
-	match get_enum_selection(0):
+	match _get_arg_safe(&"operation", GaeaValue.Type.ENUM):
 		Operation.ADD:
 			return "Adds a [code]float[/code] number to all cells in [param A]."
 		Operation.SUBTRACT:
@@ -42,9 +42,13 @@ func _get_argument_display_name(arg_name: StringName) -> String:
 
 
 func _get_argument_type(arg_name: StringName) -> GaeaValue.Type:
-	if arg_name == &"a":
-		return GaeaValue.Type.SAMPLE
-	return GaeaValue.Type.FLOAT
+	match arg_name:
+		&"operation":
+			return GaeaValue.Type.ENUM
+		&"a":
+			return GaeaValue.Type.SAMPLE
+		_:
+			return GaeaValue.Type.FLOAT
 
 
 func _get_output_port_type(_output_name: StringName) -> GaeaValue.Type:
@@ -67,7 +71,7 @@ func _get_operation_definitions() -> Dictionary[Operation, Definition]:
 
 
 func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> GaeaValue.Sample:
-	var operation: Operation = get_enum_selection(0) as Operation
+	var operation: Operation = _get_arg(&"operation", pouch) as Operation
 	var operation_definition: Definition = _get_operation_definitions()[operation]
 	var args: Array
 	var input_grid: GaeaValue.Sample = _get_arg(&"a", pouch)
@@ -76,7 +80,7 @@ func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> GaeaValu
 			continue
 		args.append(_get_arg(arg_name, pouch))
 	var result: GaeaValue.Sample = GaeaValue.Sample.new()
-	var grid_value_pos: int = _get_arguments_list().find(&"a")
+	var grid_value_pos: int = _get_arguments_list().find(&"a") - 1
 
 	for cell: Vector3i in input_grid.get_cells():
 		var cell_args = args.duplicate()

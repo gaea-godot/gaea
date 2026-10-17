@@ -24,31 +24,30 @@ func _get_description() -> String:
 	return "Creates a grid of values from [code]0[/code] to [code]1[/code] based on a noise algorithm."
 
 
-func _get_enums_count() -> int:
-	return 1
-
-
-func _get_enum_options(_idx: int) -> Dictionary:
-	return NoiseType
-
-
-func _get_enum_default_value(_enum_idx: int) -> int:
-	return NoiseType.SIMPLEX_SMOOTH
-
-
 func _get_arguments_list() -> Array[StringName]:
-	return [&"frequency", &"lacunarity", &"octaves", &"offset"]
+	return [&"type", &"frequency", &"lacunarity", &"octaves", &"offset"]
 
 
 func _get_argument_type(arg_name: StringName) -> GaeaValue.Type:
+	if arg_name == &"type":
+		return GaeaValue.Type.ENUM
+
 	if arg_name == &"offset":
 		return GaeaValue.Type.VECTOR3
 
 	return GaeaValue.Type.INT if arg_name == &"octaves" else GaeaValue.Type.FLOAT
 
 
+func _get_argument_hint(arg_name: StringName) -> Dictionary[String, Variant]:
+	if arg_name == &"type":
+		return { "options": NoiseType }
+	return super(arg_name)
+
+
 func _get_argument_default_value(arg_name: StringName) -> Variant:
 	match arg_name:
+		&"type":
+			return NoiseType.SIMPLEX_SMOOTH
 		&"frequency":
 			return 0.01
 		&"lacunarity":
@@ -69,7 +68,7 @@ func _get_output_port_type(_output_name: StringName) -> GaeaValue.Type:
 func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> GaeaValue.Sample:
 	var noise: FastNoiseLite = FastNoiseLite.new()
 	noise.seed = pouch.settings.seed + salt
-	noise.noise_type = get_enum_selection(0) as FastNoiseLite.NoiseType
+	noise.noise_type = _get_arg(&"type", pouch) as FastNoiseLite.NoiseType
 
 	noise.frequency = _get_arg(&"frequency", pouch)
 	noise.fractal_octaves = _get_arg(&"octaves", pouch)

@@ -167,17 +167,6 @@ category: {category}
 
 	text += get_extra.call(GaeaNodeResource.DocumentationSection.DESCRIPTION)
 
-	# Enums
-	if resource.get_enums_count() > 0:
-		text += "\n## Enums\n"
-		for enum_index in resource.get_enums_count():
-			text += "\n### %s\n" % resource.get_enum_title(enum_index)
-			text += "\n%s\n" % resource.get_enum_description(enum_index)
-			for enum_value: int in resource.get_enum_options(enum_index).values():
-				text += "\n- %s" % [resource.get_enum_option_display_name(enum_index, enum_value)]
-			text += "\n"
-	text += get_extra.call(GaeaNodeResource.DocumentationSection.ENUMS)
-
 	# Arguments
 	var arguments: Array[StringName] = resource.get_arguments_list()
 	if arguments.size() > 0:
@@ -186,9 +175,9 @@ category: {category}
 		var rows: Array[Array] = []
 		var column_size: Array[int] = [4, 4, 11, 7]
 		for arg_name: String in arguments:
-			if resource.get_argument_type(arg_name) == GaeaValue.Type.CATEGORY:
+			var arg_type: GaeaValue.Type = resource.get_argument_type(arg_name)
+			if arg_type == GaeaValue.Type.CATEGORY:
 				continue
-
 
 			var display_name: String = resource.get_argument_display_name(arg_name)
 			var name_column: String = "`%s`" % arg_name
@@ -197,7 +186,7 @@ category: {category}
 
 			var current_row: Array[String] = [
 				"[%s](%s)" % [
-					GaeaValue.get_type_string(resource.get_argument_type(arg_name)),
+					GaeaValue.get_type_string(arg_type),
 					SLOT_TYPES_LINK
 				],
 				name_column,
@@ -208,13 +197,19 @@ category: {category}
 			if default_value is GaeaValue.GridType:
 				current_row.append("")
 			elif default_value is Dictionary or default_value is Array:
-				if resource.get_argument_type(arg_name) == GaeaValue.Type.RANGE:
+				if arg_type == GaeaValue.Type.RANGE:
 					current_row.append("%s-%s" % [
 						default_value.get("min", "N/A"),
 						default_value.get("max", "N/A")
 					])
 				else:
 					current_row.append(JSON.stringify(default_value))
+			elif arg_type == GaeaValue.Type.ENUM:
+				var hint: Dictionary[String, Variant] = resource.get_argument_hint(arg_name)
+				var options: Dictionary[String, int] = GaeaEditorEnumArgument.parse_options(hint["options"])
+				current_row.append(
+					options.find_key(default_value)
+				)
 			else:
 				current_row.append(var_to_str(default_value))
 

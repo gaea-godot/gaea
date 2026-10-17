@@ -33,20 +33,9 @@ func _get_description() -> String:
 where they walk to [code]1.0[/code], while changing direction and/or spawning new walkers."""
 
 
-func _get_enums_count() -> int:
-	return 1
-
-
-func _get_enum_options(_enum_idx: int) -> Dictionary:
-	return AxisType
-
-
-func _get_enum_option_display_name(_enum_idx: int, option_value: int) -> String:
-	return "%s Axis" % AxisType.find_key(option_value)
-
-
 func _get_arguments_list() -> Array[StringName]:
 	return [
+		&"axis",
 		&"max_cells",
 		&"starting_position",
 		&"CATEGORY_DIRECTION_CHANCES",
@@ -67,6 +56,8 @@ func _get_argument_type(arg_name: StringName) -> GaeaValue.Type:
 		return GaeaValue.Type.CATEGORY
 
 	match arg_name:
+		&"axis":
+			return GaeaValue.Type.ENUM
 		&"starting_position":
 			return GaeaValue.Type.VECTOR3I
 		&"bigger_room_size_range":
@@ -97,6 +88,12 @@ func _get_output_ports_list() -> Array[StringName]:
 
 
 func _get_argument_hint(arg_name: StringName) -> Dictionary[String, Variant]:
+	if arg_name == &"axis":
+		return {
+			"options": AxisType,
+			"display_name_provider": func(_id: int, key: String) -> String: return key.to_upper()
+		}
+
 	if arg_name == &"bigger_room_size_range":
 		return {"min": 1, "max": 5, "suffix": "²", "step": 1, "allow_lesser": false}
 
@@ -105,6 +102,7 @@ func _get_argument_hint(arg_name: StringName) -> Dictionary[String, Variant]:
 
 	if arg_name.ends_with(&"weight") or arg_name == &"max_cells":
 		return {"min": 0}
+
 
 	return super(arg_name)
 
@@ -115,7 +113,7 @@ func _get_output_port_type(_output_name: StringName) -> GaeaValue.Type:
 
 func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> GaeaValue.Sample:
 	_log_data(_output_port)
-	var axis_type: AxisType = get_enum_selection(0) as AxisType
+	var axis_type: AxisType = _get_arg(&"axis", pouch) as AxisType
 
 	var starting_position: Vector3 = _get_arg(&"starting_position", pouch)
 	starting_position = starting_position.round()
@@ -210,8 +208,8 @@ func _add_walker(pos: Vector3, array: Array[Walker]) -> void:
 		[
 			Vector3.LEFT,
 			Vector3.RIGHT,
-			Vector3.DOWN if get_enum_selection(0) == AxisType.XY else Vector3.FORWARD,
-			Vector3.UP if get_enum_selection(0) == AxisType.XY else Vector3.BACK
+			Vector3.DOWN if _get_arg(&"axis", null) == AxisType.XY else Vector3.FORWARD,
+			Vector3.UP if _get_arg(&"axis", null) == AxisType.XY else Vector3.BACK
 		]
 		. pick_random()
 	)

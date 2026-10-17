@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://cxvfo0jd720y7"]
+
+[ext_resource type="PackedScene" uid="uid://i2nwlab8rau" path="res://addons/gaea/editor/graph/argument_editors/argument_editor.tscn" id="1_rkqo2"]
+[ext_resource type="Script" uid="uid://ben23dg4gdfct" path="res://addons/gaea/editor/graph/argument_editors/enum.gd" id="2_souep"]
+
+[node name="BaseParameter" unique_id=1202882608 instance=ExtResource("1_rkqo2")]
+offset_right = 78.0
+script = ExtResource("2_souep")
+
+[node name="OptionButton" type="OptionButton" parent="." index="1" unique_id=1844099160]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+fit_to_longest_item = false
+search_bar_enabled = true
+search_bar_min_item_count = 5

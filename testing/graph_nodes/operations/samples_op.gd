@@ -14,19 +14,22 @@ func _assert_operation_result(args: Array[Variant], expected: float) -> void:
 	graph.ensure_initialized()
 	graph.add_node(node, Vector2i.ZERO)
 
-	for i in node.get_arguments_list().size():
-		if node.get_argument_type(node.get_arguments_list()[i]) == GaeaValue.Type.SAMPLE:
+	var argument_list = node.get_arguments_list().filter(func(arg_name: StringName):
+		return arg_name != &"operation"
+	)
+	for i in argument_list.size():
+		if node.get_argument_type(argument_list[i]) == GaeaValue.Type.SAMPLE:
 			var sample := GaeaValue.Sample.new()
 			sample.set_cell(Vector3i.ZERO, args[i])
 			sample.set_cell(Vector3i(1, 1, 0), args[i])
 			sample.set_cell(Vector3i(1, 0, 0), args[i])
 			sample.set_cell(Vector3i(0, 1, 0), args[i])
 			args[i] = sample
-		node.set_argument_value(node.get_arguments_list()[i], args[i])
+		node.set_argument_value(argument_list[i], args[i])
 	var grid: GaeaValue.Sample = node._get_data(&"result", pouch)
 	assert_bool(grid.is_empty())\
 		.override_failure_message("[b]GaeaNodeSampleOp[/b] returned an empty grid with operation [b]%s[/b]."
-			% GaeaNodeSamplesOp.Operation.keys()[node.get_enum_selection(0)])\
+			% GaeaNodeSamplesOp.Operation.keys()[node._get_arg_safe(&"operation", GaeaValue.Type.ENUM)])\
 		.is_false()
 
 	for cell in grid.get_cells():
@@ -34,7 +37,7 @@ func _assert_operation_result(args: Array[Variant], expected: float) -> void:
 		assert_float(result)\
 			.override_failure_message(
 				"[b]GaeaNodeSamplesOp[/b] returned an unexpected value with operation [b]%s[/b]."
-				% GaeaNodeSamplesOp.Operation.keys()[node.get_enum_selection(0)]
+				% GaeaNodeSamplesOp.Operation.keys()[node._get_arg_safe(&"operation", GaeaValue.Type.ENUM)]
 				)\
 			.append_failure_message(
 				"Arguments: %s\n Expected result: %s\n Returned result: %s\n At cell: %s"
@@ -43,30 +46,30 @@ func _assert_operation_result(args: Array[Variant], expected: float) -> void:
 
 
 func test_add() -> void:
-	node.set_enum_value(0, GaeaNodeSamplesOp.Operation.ADD)
+	node.set_argument_value(&"operation", GaeaNodeSamplesOp.Operation.ADD)
 	_assert_operation_result([2.0, 1.0], 3.0)
 	_assert_operation_result([1.0, -0.5], 0.5)
 
 
 func test_subtract() -> void:
-	node.set_enum_value(0, GaeaNodeSamplesOp.Operation.SUBTRACT)
+	node.set_argument_value(&"operation", GaeaNodeSamplesOp.Operation.SUBTRACT)
 	_assert_operation_result([2.0, 1.0], 1.0)
 	_assert_operation_result([1.0, -0.5], 1.5)
 
 
 func test_multiply() -> void:
-	node.set_enum_value(0, GaeaNodeSamplesOp.Operation.MULTIPLY)
+	node.set_argument_value(&"operation", GaeaNodeSamplesOp.Operation.MULTIPLY)
 	_assert_operation_result([4.0, 2.0], 8.0)
 	_assert_operation_result([4.0, -2.0], -8.0)
 
 
 func test_divide() -> void:
-	node.set_enum_value(0, GaeaNodeFloatOp.Operation.DIVIDE)
+	node.set_argument_value(&"operation", GaeaNodeFloatOp.Operation.DIVIDE)
 	_assert_operation_result([2.0, 1.0], 2.0)
 	_assert_operation_result([1.0, -0.5], -2.0)
 
 
 func test_lerp() -> void:
-	node.set_enum_value(0, GaeaNodeSamplesOp.Operation.LERP)
+	node.set_argument_value(&"operation", GaeaNodeSamplesOp.Operation.LERP)
 	_assert_operation_result([1.0, 2.0, 0.5], 1.5)
 	_assert_operation_result([1.0, -0.5, 0.5], 0.25)

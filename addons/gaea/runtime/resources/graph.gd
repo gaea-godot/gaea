@@ -50,7 +50,7 @@ enum PreviewSizePreset {
 }
 
 ## Current save version used for [GaeaGraphMigration].
-const CURRENT_SAVE_VERSION := 5
+const CURRENT_SAVE_VERSION := 6
 
 ## [GaeaLayer]s as seen in the Output node in the graph. Can be used
 ## to allow more than one [GaeaMaterial] in a single tile.
@@ -537,16 +537,6 @@ func get_node_argument_list(id: int) -> Dictionary:
 ## Removes the specified argument from the specified node, meaning it will use the default value.
 func remove_node_argument(id: int, arg_name: StringName) -> void:
 	get_node_argument_list(id).erase(arg_name)
-	emit_changed()
-
-
-## Sets the specified node's enum value at [param enum_idx] to [param value]
-## (and resizes the enums array if necessary).
-func set_node_enum(id: int, enum_idx: int, value: int) -> void:
-	var node_enums: Array = get_node_data(id).get_or_add(&"enums", [])
-	if node_enums.size() <= enum_idx:
-		node_enums.resize(enum_idx + 1)
-	node_enums.set(enum_idx, value)
 	emit_changed()
 
 

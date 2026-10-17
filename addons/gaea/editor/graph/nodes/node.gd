@@ -30,7 +30,6 @@ var _finished_loading: bool = false:
 var _finished_rebuilding: bool = true:
 	get = has_finished_rebuilding
 var _editors: Dictionary[StringName, GaeaEditorGraphNodeArgument]
-var _enum_editors: Array[OptionButton]
 var _last_category: GaeaEditorArgumentCategory
 
 # Holds a cache of the generated titlebar styleboxes for each [enum GaeaValue.Type].
@@ -70,20 +69,6 @@ func _on_added() -> void:
 	resource.argument_list_changed.connect(_rebuild, CONNECT_DEFERRED)
 	resource.argument_hint_changed.connect(_on_argument_hint_changed, CONNECT_DEFERRED)
 
-	for enum_idx in resource.get_enums_count():
-		var option_button: OptionButton = OptionButton.new()
-		for option in resource.get_enum_options(enum_idx).values():
-			option_button.add_item(resource.get_enum_option_display_name(enum_idx, option), option)
-			option_button.set_item_icon(
-				option_button.get_item_index(option),
-				resource.get_enum_option_icon(enum_idx, option)
-			)
-		option_button.select(option_button.get_item_index(resource.get_enum_selection(enum_idx)))
-
-		add_child(option_button)
-		option_button.item_selected.connect(_on_enum_value_changed.bind(enum_idx, option_button))
-		_enum_editors.append(option_button)
-
 	await _rebuild()
 
 	title = resource.get_title()
@@ -104,7 +89,6 @@ func _rebuild() -> void:
 	var saved_data := {}
 	if _finished_loading:
 		saved_data = graph_edit.graph.get_node_data(resource.id)
-		resource.enum_selections = saved_data.get("enums", [])
 	_editors.clear()
 
 	_preview_container = null
@@ -217,7 +201,7 @@ func _get_output_slot(for_output: StringName) -> GaeaEditorGraphNodeOutputSlot:
 	if overridden_idx >= 0:
 		return get_child(overridden_idx)
 
-	var idx = resource.get_enums_count() + resource.get_arguments_list().size()
+	var idx = resource.get_arguments_list().size()
 	for output in resource.get_output_ports_list():
 		if output == for_output:
 			return get_child(idx)
@@ -298,12 +282,6 @@ func _on_argument_value_changed(
 		graph_edit.graph.set_node_argument(resource.id, arg_name, value)
 
 
-func _on_enum_value_changed(option_idx: int, enum_idx: int, button: OptionButton) -> void:
-	var value := button.get_item_id(option_idx)
-	resource.set_enum_value(enum_idx, value)
-	graph_edit.graph.set_node_enum(resource.id, enum_idx, value)
-
-
 func _on_argument_hint_changed(arg_name: StringName) -> void:
 	if _editors.has(arg_name):
 		_editors.get(arg_name).set(&"hint", resource.get_argument_hint(arg_name))
@@ -352,14 +330,6 @@ func auto_shrink() -> void:
 func load_save_data(saved_data: Dictionary) -> void:
 	if saved_data.has(&"position"):
 		position_offset = saved_data.position
-
-	if saved_data.has(&"enums"):
-		for enum_idx: int in saved_data.get(&"enums").size():
-			if enum_idx >= _enum_editors.size():
-				break
-			_enum_editors[enum_idx].select(
-				_enum_editors[enum_idx].get_item_index(saved_data.get("enums")[enum_idx])
-			)
 
 	if saved_data.has(&"arguments"):
 		var arguments = saved_data.get(&"arguments")

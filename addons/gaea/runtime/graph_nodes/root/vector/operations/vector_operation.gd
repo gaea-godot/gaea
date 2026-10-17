@@ -41,8 +41,8 @@ func _get_description() -> String:
 	if get_tree_name() == _get_title() and not is_instance_valid(get_meta(&"_gaea_graph_node")):
 		return "Operation between 2 [code]Vector[/code]s."
 
-	var vector_name := _get_enum_option_display_name(0, get_enum_selection(0))
-	match get_enum_selection(1):
+	var vector_name := _get_vector_type_name()
+	match _get_arg_safe(&"operation", GaeaValue.Type.ENUM):
 		Operation.ADD:
 			return "Sums 2 [code]%s[/code]s." % vector_name
 		Operation.SUBTRACT:
@@ -69,50 +69,52 @@ func _get_tree_items() -> Array[GaeaNodeResource]:
 					]
 				)
 			)
-			item.set_default_enum_value_override(0, VectorType[vector_type])
-			item.set_default_enum_value_override(1, operation)
+			item.set_default_argument_value_override(&"type", VectorType[vector_type])
+			item.set_default_argument_value_override(&"operation", operation)
 			items.append(item)
 	return items
 
 
-func _get_enums_count() -> int:
-	return super() + 1
-
-
-func _get_enum_options(_idx: int) -> Dictionary:
-	if _idx < super._get_enums_count():
-		return super(_idx)
-
-	var options: Dictionary = {}
-	for operation in operation_definitions.keys():
-		options.set(Operation.find_key(operation), operation)
-	return options
-
-
-func _get_enum_option_icon(enum_idx: int, option_value: int) -> Texture:
-	if enum_idx < super._get_enums_count():
-		return super(enum_idx, option_value)
-	return null
-
-
 func _get_arguments_list() -> Array[StringName]:
-	return operation_definitions.get(get_enum_selection(1)).args
+	var array: Array[StringName] = super()
+	array.append(&"operation")
+	array.append_array(operation_definitions.get(_get_arg_safe(&"operation", GaeaValue.Type.ENUM)).args)
+	return array
 
 
 func _get_argument_display_name(arg_name: StringName) -> String:
+	if arg_name == &"operation" or arg_name == &"type":
+		return super(arg_name)
 	return arg_name
 
 
-func _get_argument_type(_arg_name: StringName) -> GaeaValue.Type:
-	return get_type()
+func _get_argument_type(arg_name: StringName) -> GaeaValue.Type:
+	if arg_name == &"operation":
+		return GaeaValue.Type.ENUM
+
+	var super_value := super(arg_name)
+	return super_value if super_value != GaeaValue.Type.NULL else get_type()
 
 
-func _is_available() -> bool:
-	return get_type() != GaeaValue.Type.NULL
+func _get_argument_hint(arg_name: StringName) -> Dictionary[String, Variant]:
+	if arg_name == &"operation":
+		var options: Dictionary = {}
+		for operation in operation_definitions.keys():
+			options.set(Operation.find_key(operation), operation)
+		return {"options": options}
+	return super(arg_name)
 
 
-func _on_enum_value_changed(_enum_idx: int, _option_value: int) -> void:
-	notify_argument_list_changed()
+func _get_argument_default_value(arg_name: StringName) -> Variant:
+	if arg_name == &"operation":
+		return Operation.ADD
+	return VectorType.VECTOR2 if arg_name == &"type" else super(arg_name)
+
+
+func _on_argument_value_changed(arg_name: StringName, new_value: Variant) -> void:
+	if arg_name == &"operation":
+		notify_argument_list_changed()
+	super(arg_name, new_value)
 
 
 func _get_output_ports_list() -> Array[StringName]:
@@ -120,15 +122,15 @@ func _get_output_ports_list() -> Array[StringName]:
 
 
 func _get_output_port_display_name(_output_name: StringName) -> String:
-	return operation_definitions[get_enum_selection(1)].output
+	return operation_definitions[_get_arg_safe(&"operation", GaeaValue.Type.ENUM)].output
 
 
 func _get_output_port_type(_output_name: StringName) -> GaeaValue.Type:
-	return get_enum_selection(0) as GaeaValue.Type
+	return _get_vector_type() as GaeaValue.Type
 
 
 func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> Variant:
-	var operation: Operation = get_enum_selection(1) as Operation
+	var operation: Operation = _get_arg(&"operation", pouch) as Operation
 	var args: Array
 	for arg_name: StringName in operation_definitions[operation].args:
 		args.append(_get_arg(arg_name, pouch))

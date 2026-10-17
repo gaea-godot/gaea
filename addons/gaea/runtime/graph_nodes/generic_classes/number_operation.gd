@@ -75,7 +75,7 @@ static var _number_operation_definitions: Dictionary[Operation, Definition] = {
 
 
 func _get_description() -> String:
-	match get_enum_selection(0):
+	match _get_arg_safe(&"operation", GaeaValue.Type.ENUM):
 		Operation.POWER:
 			return "Returns the value of [param base] raised to the power of [param exp]."
 		Operation.MAX:
@@ -117,38 +117,43 @@ func _get_tree_items() -> Array[GaeaNodeResource]:
 		var output_name := operation_definitions[operation].output
 		var tree_name := "%s (%s)" % [operation_name, output_name]
 		item.set_tree_name_override(tree_name)
-		item.set_default_enum_value_override(0, operation)
+		item.set_default_argument_value_override(&"operation", operation)
 		items.append(item)
 
 	return items
 
 
-func _get_enums_count() -> int:
-	return 1
-
-
-func _get_enum_options(_idx: int) -> Dictionary:
-	var options: Dictionary = {}
-
-	for operation in _get_operation_definitions().keys():
-		options.set(Operation.find_key(operation), operation)
-
-	return options
-
-
 func _get_arguments_list() -> Array[StringName]:
-	return _get_operation_definitions().get(get_enum_selection(0)).args
+	var array: Array[StringName] = [&"operation"]
+	array.append_array(_get_operation_definitions().get(_get_arg_safe(&"operation", GaeaValue.Type.ENUM)).args)
+	return array
 
 
 func _get_argument_display_name(arg_name: StringName) -> String:
+	if arg_name == &"operation":
+		return super(arg_name)
 	return arg_name
 
 
-func _get_argument_type(_arg_name: StringName) -> GaeaValue.Type:
+func _get_argument_type(arg_name: StringName) -> GaeaValue.Type:
+	if arg_name == &"operation":
+		return GaeaValue.Type.ENUM
 	return get_type()
 
 
-func _on_enum_value_changed(_enum_idx: int, _option_value: int) -> void:
+func _get_argument_hint(arg_name: StringName) -> Dictionary[String, Variant]:
+	if arg_name == &"operation":
+		var options: Dictionary = {}
+
+		for operation in _get_operation_definitions().keys():
+			options.set(Operation.find_key(operation), operation)
+		return {"options": options}
+	return super(arg_name)
+
+
+
+func _on_argument_value_changed(arg_name: StringName, _new_value: Variant) -> void:
+	if arg_name != &"operation": return
 	notify_argument_list_changed()
 
 
@@ -157,11 +162,11 @@ func _get_output_ports_list() -> Array[StringName]:
 
 
 func _get_output_port_display_name(_output_name: StringName) -> String:
-	return _get_operation_definitions()[get_enum_selection(0)].output
+	return _get_operation_definitions()[_get_arg_safe(&"operation", GaeaValue.Type.ENUM)].output
 
 
 func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> Variant:
-	var operation: Operation = get_enum_selection(0) as Operation
+	var operation: Operation = _get_arg(&"operation", pouch) as Operation
 	var args: Array
 	for arg_name: StringName in _get_operation_definitions()[operation].args:
 		args.append(_get_arg(arg_name, pouch))

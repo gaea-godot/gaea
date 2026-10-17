@@ -12,32 +12,45 @@ enum VectorType {
 }
 
 
-func _get_vector_type_name() -> String:
-	return VectorType.find_key(get_enum_selection(0)).to_pascal_case()
+func _get_vector_type() -> VectorType:
+	return _get_arg_safe(&"type", GaeaValue.Type.ENUM, VectorType.VECTOR2) as VectorType
 
 
-func _get_enums_count() -> int:
-	return 1
+func _get_vector_type_name(type: VectorType = _get_vector_type()) -> String:
+	return VectorType.find_key(type).to_pascal_case()
 
 
-func _get_enum_options(enum_idx: int) -> Dictionary:
-	match enum_idx:
-		0:
-			return VectorType
-	return {}
+func _get_arguments_list() -> Array[StringName]:
+	return [&"type"]
 
 
-func _get_enum_option_display_name(enum_idx: int, option_value: int) -> String:
-	return super(enum_idx, option_value).replace(" ", "")
+func _get_argument_type(arg_name: StringName) -> GaeaValue.Type:
+	return GaeaValue.Type.ENUM if arg_name == &"type" else GaeaValue.Type.NULL
+
+
+func _get_argument_hint(arg_name: StringName) -> Dictionary[String, Variant]:
+	if arg_name == &"type":
+		return {
+			"options": VectorType,
+			"display_name_provider": func(_id: int, key: String) -> String: return key.to_pascal_case()
+		}
+	return super(arg_name)
+
+
+func _get_argument_default_value(arg_name: StringName) -> Variant:
+	if arg_name == &"type":
+		return VectorType.VECTOR2
+	return super(arg_name)
 
 
 func _get_enum_option_icon(_enum_idx: int, option_value: int) -> Texture:
 	return GaeaValue.get_display_icon(option_value)
 
 
-func _on_enum_value_changed(_enum_idx: int, _option_value: int) -> void:
-	notify_argument_list_changed()
+func _on_argument_value_changed(arg_name: StringName, _new_value: Variant) -> void:
+	if arg_name == &"type":
+		notify_argument_list_changed()
 
 
 func _is_integer_vector() -> bool:
-	return get_enum_selection(0) in [VectorType.VECTOR2I, VectorType.VECTOR3I]
+	return _get_vector_type() in [VectorType.VECTOR2I, VectorType.VECTOR3I]

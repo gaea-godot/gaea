@@ -11,6 +11,8 @@ static func migrate(data: GaeaGraph):
 		_migration_step_node_ids(data)
 	if data.save_version == 4:
 		_migration_step_3d_neighbors_and_rules(data)
+	if data.save_version == 5:
+		_migration_step_enums(data)
 	push_warning("Gaea graph (%s) migrated from previous save file format. Please save your project and reload." % data.resource_path)
 
 
@@ -252,3 +254,31 @@ static func _migration_step_3d_neighbors_and_rules(data: GaeaGraph):
 						new_argument[Vector3i(cell.x, cell.y, 0)] = argument[cell]
 					data.set_node_argument(node_id, arg_name, new_argument)
 	data.save_version = 5
+
+
+static func _migration_step_enums(data: GaeaGraph) -> void:
+	for node_id in data.get_ids():
+		var node_data := data.get_node_data(node_id)
+		var enums: Array = node_data.get(&"enums", [])
+		if enums.is_empty():
+			continue
+
+		var node: GaeaNodeResource = load(node_data[&"uid"]).new()
+		if not is_instance_valid(node):
+			continue
+		var node_arguments: Array[StringName] = node.get_arguments_list()
+		var enum_arguments: Array[StringName]
+		for arg in node_arguments:
+			if node.get_argument_type(arg) == GaeaValue.Type.ENUM:
+				enum_arguments.append(arg)
+
+		if enum_arguments.is_empty():
+			continue
+
+		for i in enums.size():
+			if i >= enum_arguments.size():
+				break
+			data.set_node_argument(node_id, enum_arguments[i], enums[i])
+		node_data.erase(&"enums")
+	data.save_version = 6
+	push_warning("Gaea graph (%s) migration tried to guess your enum values, please check they were migrated correctly." % data.resource_path)

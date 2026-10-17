@@ -14,7 +14,7 @@ const OPERATION_SYMBOLS := {
 
 
 func _get_description() -> String:
-	match get_enum_selection(0):
+	match _get_arg_safe(&"operation", GaeaValue.Type.ENUM):
 		Operation.UNION:
 			return """Merges [param A]-[param D].
 Later grids override any cells from the previous grids when valid. (B overrides A, C overrides B, etc.)"""
@@ -30,42 +30,44 @@ Later grids override any cells from the previous grids when valid. (B overrides 
 
 func _get_tree_items() -> Array[GaeaNodeResource]:
 	var items: Array[GaeaNodeResource]
-	for operation: Operation in _get_enum_options(0).values():
+	for operation: Operation in Operation.values():
+		if get_type() == GaeaValue.Type.MAP and operation == Operation.COMPLEMENT:
+			continue
 		var item: GaeaNodeResource = get_script().new()
 		var operation_name: String = Operation.find_key(operation).to_pascal_case()
 		var symbol: String = OPERATION_SYMBOLS[operation]
 		var tree_name := "%s (%s)" % [operation_name, symbol]
 		item.set_tree_name_override(tree_name)
-		item.set_default_enum_value_override(0, operation)
+		item.set_default_argument_value_override(&"operation", operation)
 		items.append(item)
 
 	return items
 
 
-func _get_enums_count() -> int:
-	return 1
+func _get_arguments_list() -> Array[StringName]:
+	var array: Array[StringName] = [&"operation"]
+	match _get_arg_safe(&"operation", GaeaValue.Type.ENUM):
+		Operation.UNION, Operation.INTERSECTION:
+			array.append_array([&"a", &"b", &"c", &"d"])
+		Operation.COMPLEMENT:
+			array.append(&"a")
+		Operation.DIFFERENCE:
+			array.append_array([&"a", &"b"])
+	return array
 
 
-func _get_enum_options(_idx: int) -> Dictionary:
+func _get_argument_type(arg_name: StringName) -> GaeaValue.Type:
+	if arg_name == &"operation": return GaeaValue.Type.ENUM
+	return get_type()
+
+
+func _get_argument_hint(arg_name: StringName) -> Dictionary[String, Variant]:
+	if arg_name != &"operation":
+		return super(arg_name)
 	var operations := Operation.duplicate()
 	if get_type() == GaeaValue.Type.MAP:
 		operations.erase(operations.find_key(Operation.COMPLEMENT))
-	return operations
-
-
-func _get_arguments_list() -> Array[StringName]:
-	match get_enum_selection(0):
-		Operation.UNION, Operation.INTERSECTION:
-			return [&"a", &"b", &"c", &"d"]
-		Operation.COMPLEMENT:
-			return [&"a"]
-		Operation.DIFFERENCE:
-			return [&"a", &"b"]
-	return []
-
-
-func _get_argument_type(_arg_name: StringName) -> GaeaValue.Type:
-	return get_type()
+	return { "options": operations }
 
 
 func _get_output_ports_list() -> Array[StringName]:
@@ -73,7 +75,7 @@ func _get_output_ports_list() -> Array[StringName]:
 
 
 func _get_output_port_display_name(output_name: StringName) -> String:
-	match get_enum_selection(0):
+	match _get_arg_safe(&"operation", GaeaValue.Type.ENUM):
 		Operation.UNION:
 			return "A ∪ B ∪ ..."
 		Operation.INTERSECTION:
@@ -85,14 +87,17 @@ func _get_output_port_display_name(output_name: StringName) -> String:
 	return super(output_name)
 
 
-func _on_enum_value_changed(_enum_idx: int, _option_value: int) -> void:
-	notify_argument_list_changed()
+func _on_argument_value_changed(arg_name: StringName, _new_value: Variant) -> void:
+	if arg_name == &"operation":
+		notify_argument_list_changed()
 
 
 # The generic Dictionary type here is expected, and the type will be updated in child classes.
 func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> GaeaValue.GridType:
 	var grids: Array[GaeaValue.GridType] = []
 	for arg in _get_arguments_list():
+		if get_argument_type(arg) not in [GaeaValue.Type.SAMPLE, GaeaValue.Type.MAP]:
+			continue
 		var arg_grid: GaeaValue.GridType = _get_arg(arg, pouch)
 		if not arg_grid.is_empty():
 			grids.append(arg_grid)
@@ -102,7 +107,7 @@ func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> GaeaValu
 	if grids.is_empty():
 		return grid
 
-	match get_enum_selection(0):
+	match _get_arg(&"operation", pouch):
 		Operation.UNION:
 			for x in _get_axis_range(Vector3i.AXIS_X, pouch.area):
 				for y in _get_axis_range(Vector3i.AXIS_Y, pouch.area):

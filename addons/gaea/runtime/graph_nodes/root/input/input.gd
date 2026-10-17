@@ -11,7 +11,7 @@ func _get_title() -> String:
 
 
 func _get_description() -> String:
-	match get_enum_selection(0):
+	match _get_arg_safe(&"input", GaeaValue.Type.ENUM):
 		InputVar.WORLD_SIZE:
 			return "Outputs the [param world_size] parameter in the generator's inspector."
 		InputVar.AREA_SIZE:
@@ -27,7 +27,7 @@ func _get_tree_items() -> Array[GaeaNodeResource]:
 	var items: Array[GaeaNodeResource]
 	for input_type in InputVar.values():
 		var item: GaeaNodeResource = get_script().new()
-		item.set_default_enum_value_override(0, input_type)
+		item.set_default_argument_value_override(&"input", input_type)
 		item.set_tree_name_override(InputVar.find_key(input_type).to_pascal_case())
 		items.append(item)
 
@@ -35,31 +35,11 @@ func _get_tree_items() -> Array[GaeaNodeResource]:
 
 
 func _get_argument_type(_arg_name: StringName) -> GaeaValue.Type:
-	return GaeaValue.Type.NULL
+	return GaeaValue.Type.ENUM
 
 
-func _get_enums_count() -> int:
-	return 1
-
-
-func _get_enum_options(_enum_idx: int) -> Dictionary:
-	return InputVar
-
-
-func _get_enum_title(_enum_idx: int) -> String:
-	return "Input"
-
-
-func _get_enum_description(_enum_idx: int) -> String:
-	return "The available inputs, information about generation accessible from this node."
-
-
-func _on_enum_value_changed(_enum_idx: int, _option_value: int) -> void:
+func _on_argument_value_changed(_arg_name: StringName, _new_value: Variant) -> void:
 	notify_argument_list_changed()
-
-
-func _get_enum_option_icon(_enum_idx: int, option_value: int) -> Texture:
-	return GaeaValue.get_display_icon(_get_type_of_input(option_value))
 
 
 func _get_output_ports_list() -> Array[StringName]:
@@ -67,7 +47,15 @@ func _get_output_ports_list() -> Array[StringName]:
 
 
 func _get_arguments_list() -> Array[StringName]:
-	return []
+	return [&"input"]
+
+
+func _get_argument_hint(_arg_name: StringName) -> Dictionary[String, Variant]:
+	return {"options": InputVar, "icon_provider": GaeaNodeInput.get_var_icon}
+
+
+func _get_argument_display_name(_arg_name: StringName) -> String:
+	return ""
 
 
 func _get_overridden_output_port_idx(_output_name: StringName) -> int:
@@ -75,14 +63,18 @@ func _get_overridden_output_port_idx(_output_name: StringName) -> int:
 
 
 func _get_output_port_type(_output_name: StringName) -> GaeaValue.Type:
-	return _get_type_of_input(get_enum_selection(0))
+	return GaeaNodeInput.get_var_type(_get_arg_safe(&"input", GaeaValue.Type.ENUM))
 
 
 func _get_output_port_description(_output_name: StringName) -> String:
 	return "Returns the selected value, in this case: %s" % _get_description().trim_prefix("Outputs ")
 
 
-func _get_type_of_input(input: InputVar) -> GaeaValue.Type:
+static func get_var_icon(input: InputVar) -> Texture2D:
+	return GaeaValue.get_display_icon(GaeaNodeInput.get_var_type(input))
+
+
+static func get_var_type(input: InputVar) -> GaeaValue.Type:
 	match input:
 		InputVar.WORLD_SIZE:
 			return GaeaValue.Type.VECTOR3I
@@ -93,7 +85,7 @@ func _get_type_of_input(input: InputVar) -> GaeaValue.Type:
 
 
 func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> Variant:
-	match get_enum_selection(0):
+	match _get_arg(&"input", pouch):
 		InputVar.WORLD_SIZE:
 			return pouch.settings.world_size
 		InputVar.AREA_SIZE:

@@ -135,19 +135,13 @@ func _get_description() -> String:
 Rate can be adjusted with [param start] and [param end]."""
 
 
-func _get_enums_count() -> int:
-	return 1
-
-
-func _get_enum_options(_idx: int) -> Dictionary:
-	return FalloffShape
-
-
 func _get_arguments_list() -> Array[StringName]:
-	return [&"start", &"end"]
+	return [&"shape", &"start", &"end"]
 
 
-func _get_argument_type(_arg_name: StringName) -> GaeaValue.Type:
+func _get_argument_type(arg_name: StringName) -> GaeaValue.Type:
+	if arg_name == &"shape":
+		return GaeaValue.Type.ENUM
 	return GaeaValue.Type.FLOAT
 
 
@@ -157,6 +151,12 @@ func _get_argument_default_value(arg_name: StringName) -> Variant:
 			return 0.5
 		&"end":
 			return 1.0
+	return super(arg_name)
+
+
+func _get_argument_hint(arg_name: StringName) -> Dictionary[String, Variant]:
+	if arg_name == &"shape":
+		return {"options": FalloffShape}
 	return super(arg_name)
 
 
@@ -173,7 +173,7 @@ func _get_data(_output_port: StringName, pouch: GaeaGenerationPouch) -> GaeaValu
 	var end: float = _get_arg(&"end", pouch)
 	var result: GaeaValue.Sample = GaeaValue.Sample.new()
 	var sampler: FalloffSampler
-	match get_enum_selection(0):
+	match _get_arg(&"shape", pouch):
 		FalloffShape.SQUARE:
 			sampler = FalloffSamplerSquare.new(pouch.area, start, end)
 		FalloffShape.ROUNDED_SQUARE:

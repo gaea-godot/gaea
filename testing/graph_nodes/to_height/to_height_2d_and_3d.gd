@@ -19,14 +19,14 @@ func before() -> void:
 
 
 func test_2d() -> void:
-	node.set_enum_value(0, GaeaNodeToHeight.Type.TYPE_2D)
+	node.set_argument_value(&"type", GaeaNodeToHeight.Type.TYPE_2D)
 	_assert_output_grid_matches(
 		AREA, EXPECTED_HASH_2D, false, { &"height_offset": -4 }, &"sample"
 	)
 
 
 func test_3d() -> void:
-	node.set_enum_value(0, GaeaNodeToHeight.Type.TYPE_3D)
+	node.set_argument_value(&"type", GaeaNodeToHeight.Type.TYPE_3D)
 	_assert_output_grid_matches(
 		AREA, EXPECTED_HASH_3D, false, { &"height_offset": 4 }, &"sample"
 	)
