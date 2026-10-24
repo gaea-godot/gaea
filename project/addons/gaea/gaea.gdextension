@@ -1,0 +1,63 @@
+[configuration]
+
+entry_symbol = "gaea_library_init"
+compatibility_minimum = "4.7"
+reloadable = true
+
+[libraries]
+; Relative paths ensure that our GDExtension can be placed anywhere in the project directory.
+macos.single.debug = "./libs/macos/libgaea.macos.template_debug.dylib"
+macos.double.debug = "./libs/macos/libgaea.macos.template_debug.double.dylib"
+macos.single.release = "./libs/macos/libgaea.macos.template_release.dylib"
+macos.double.release = "./libs/macos/libgaea.macos.template_release.double.dylib"
+
+ios.arm64.single.debug = "./libs/ios/libgaea.ios.template_debug.arm64.dylib"
+ios.arm64.double.debug = "./libs/ios/libgaea.ios.template_debug.arm64.double.dylib"
+ios.arm64.single.release = "./libs/ios/libgaea.ios.template_release.arm64.dylib"
+ios.arm64.double.release = "./libs/ios/libgaea.ios.template_release.arm64.double.dylib"
+
+windows.x86_32.single.debug = "./libs/windows/gaea.windows.template_debug.x86_32.dll"
+windows.x86_32.double.debug = "./libs/windows/gaea.windows.template_debug.x86_32.double.dll"
+windows.x86_32.single.release = "./libs/windows/gaea.windows.template_release.x86_32.dll"
+windows.x86_32.double.release = "./libs/windows/gaea.windows.template_release.x86_32.double.dll"
+
+windows.x86_64.single.debug = "./libs/windows/gaea.windows.template_debug.x86_64.dll"
+windows.x86_64.double.debug = "./libs/windows/gaea.windows.template_debug.x86_64.double.dll"
+windows.x86_64.single.release = "./libs/windows/gaea.windows.template_release.x86_64.dll"
+windows.x86_64.double.release = "./libs/windows/gaea.windows.template_release.x86_64.double.dll"
+
+linux.x86_64.single.debug = "./libs/linux/libgaea.linux.template_debug.x86_64.so"
+linux.x86_64.double.debug = "./libs/linux/libgaea.linux.template_debug.x86_64.double.so"
+linux.x86_64.single.release = "./libs/linux/libgaea.linux.template_release.x86_64.so"
+linux.x86_64.double.release = "./libs/linux/libgaea.linux.template_release.x86_64.double.so"
+
+linux.arm64.single.debug = "./libs/linux/libgaea.linux.template_debug.arm64.so"
+linux.arm64.double.debug = "./libs/linux/libgaea.linux.template_debug.arm64.double.so"
+linux.arm64.single.release = "./libs/linux/libgaea.linux.template_release.arm64.so"
+linux.arm64.double.release = "./libs/linux/libgaea.linux.template_release.arm64.double.so"
+
+linux.rv64.single.debug = "./libs/linux/libgaea.linux.template_debug.rv64.so"
+linux.rv64.double.debug = "./libs/linux/libgaea.linux.template_debug.rv64.double.so"
+linux.rv64.single.release = "./libs/linux/libgaea.linux.template_release.rv64.so"
+linux.rv64.double.release = "./libs/linux/libgaea.linux.template_release.rv64.double.so"
+
+android.x86_64.single.debug = "./libs/android/libgaea.android.template_debug.x86_64.so"
+android.x86_64.double.debug = "./libs/android/libgaea.android.template_debug.x86_64.double.so"
+android.x86_64.single.release = "./libs/android/libgaea.android.template_release.x86_64.so"
+android.x86_64.double.release = "./libs/android/libgaea.android.template_release.x86_64.double.so"
+
+android.arm64.single.debug = "./libs/android/libgaea.android.template_debug.arm64.so"
+android.arm64.double.debug = "./libs/android/libgaea.android.template_debug.arm64.double.so"
+android.arm64.single.release = "./libs/android/libgaea.android.template_release.arm64.so"
+android.arm64.double.release = "./libs/android/libgaea.android.template_release.arm64.double.so"
+
+web.wasm32.single.debug = "./libs/web/libgaea.web.template_debug.wasm32.nothreads.wasm"
+web.wasm32.double.debug = "./libs/web/libgaea.web.template_debug.wasm32.double.nothreads.wasm"
+web.wasm32.single.release = "./libs/web/libgaea.web.template_release.wasm32.nothreads.wasm"
+web.wasm32.double.release = "./libs/web/libgaea.web.template_release.wasm32.double.nothreads.wasm"
+
+[icons]
+
+GaeaLayer = "uid://ceo0iba3p0ip0"
+GaeaResult = "uid://ck0l5t0dmkqhb"
+GaeaGenerationSettings = "uid://bh2gflywcw254"

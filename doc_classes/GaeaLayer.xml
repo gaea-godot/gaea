@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GaeaLayer" inherits="Resource" api_type="extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		A layer of the [GaeaResult] of a [GaeaGraph]. Doesn't hold the result data but holds information about which type of data is allowed.
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="enabled" type="bool" setter="set_enabled" getter="get_enabled" default="true">
+			If [code]false[/code], this layer's value will be [code]null[/code].
+		</member>
+		<member name="type" type="int" setter="set_type" getter="get_type" enum="GaeaValue.ArgType" default="201">
+			The [enum GaeaValue.ArgType] of this layer. [GaeaRenderer]s care only about [constant GaeaValue.ARG_TYPE_MAP] layers, but [GaeaResult] can hold any type of values.
+			Only wireable types (see [method GaeaValue.is_wireable]).
+		</member>
+	</members>
+</class>

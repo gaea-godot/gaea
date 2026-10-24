@@ -14,12 +14,46 @@ export_presets.cfg
 data_*/
 mono_crash.*.json
 
-addons/*
-!addons/gaea
-!addons/gaea_documentation_toolkit
-scenes/test/*
+project/addons/*
+!project/addons/gaea
+!project/addons/gaea_documentation_toolkit
+project/scenes/test/*
 
 # Editor-specific ignores
 .vscode/*
 
 GdUnitRunner.cfg
+
+# Ignore generated compile_commands.json
+compile_commands.json
+
+# Ignore files generated for documentation
+/src/gen
+
+# Ignore custom.py
+custom.py
+
+
+# Ignore scons database
+.sconsign*.dblite
+
+# Ignore library files but not the gdextension file
+/addons/gaea/libs/**
+
+# Binaries
+*.o
+*.os
+*.so
+*.obj
+*.bc
+*.pyc
+*.dblite
+*.pdb
+*.lib
+*.config
+*.creator
+*.creator.user
+*.files
+*.includes
+*.idb
+*.exp

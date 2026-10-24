@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GaeaGenerationSettings" inherits="Resource" api_type="extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Configuration for a [GaeaGenerator]'s generation.
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="randomize_seed_on_generate" type="bool" setter="set_randomize_seed_on_generate" getter="get_randomize_seed_on_generate" default="false">
+			If [code]true[/code], randomizes [member seed] at the start of generation.
+		</member>
+		<member name="seed" type="int" setter="set_seed" getter="get_seed" default="1804289383">
+			The seed for the random number generation. Same seed will ensure same output.
+		</member>
+		<member name="world_size" type="Vector3i" setter="set_world_size" getter="get_world_size" default="Vector3i(64, 64, 1)">
+			Size of the world to generate.
+		</member>
+	</members>
+</class>

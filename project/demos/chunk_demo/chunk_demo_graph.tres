@@ -1,0 +1,198 @@
+[gd_resource type="Resource" script_class="GaeaGraph" format=3 uid="uid://bnejoskp261es"]
+
+[ext_resource type="Script" uid="uid://e45byecr4gi6" path="res://addons/gaea/runtime/resources/materials/data/tilemap_material.gd" id="1_c5ls3"]
+[ext_resource type="Script" uid="uid://cj08rybcfwlle" path="res://addons/gaea/runtime/resources/materials/material.gd" id="1_yyf42"]
+[ext_resource type="Script" uid="uid://dae6umbqb872e" path="res://addons/gaea/runtime/resources/graph.gd" id="2_c5ls3"]
+[ext_resource type="Script" uid="uid://dy1s0h57bh7vp" path="res://addons/gaea/runtime/resources/materials/distribution/gradient_material.gd" id="3_vqyht"]
+
+[sub_resource type="Resource" id="Resource_yyf42"]
+resource_name = "Sand"
+script = ExtResource("1_c5ls3")
+source_id = 1
+atlas_coord = Vector2i(1, 0)
+preview_color = Color(0.93333334, 0.7647059, 0.6039216, 1)
+metadata/_custom_type_script = "uid://e45byecr4gi6"
+
+[sub_resource type="Resource" id="Resource_47h2s"]
+resource_name = "Grass"
+script = ExtResource("1_c5ls3")
+source_id = 1
+preview_color = Color(0.21568628, 0.5803922, 0.43137255, 1)
+metadata/_custom_type_script = "uid://e45byecr4gi6"
+
+[sub_resource type="Resource" id="Resource_3e4ue"]
+script = ExtResource("3_vqyht")
+materials = Array[ExtResource("1_yyf42")]([SubResource("Resource_yyf42"), SubResource("Resource_47h2s")])
+offsets = PackedFloat32Array(0, 0.1)
+points = Array[Dictionary]([{
+&"material": SubResource("Resource_yyf42"),
+&"offset": 0.0
+}, {
+&"material": SubResource("Resource_47h2s"),
+&"offset": 0.1
+}])
+preview_color = Color(0.14775471, 0.29722044, 0.46864656, 1)
+metadata/_custom_type_script = "uid://dy1s0h57bh7vp"
+
+[sub_resource type="Resource" id="Resource_i80a5"]
+resource_name = "Cactus"
+script = ExtResource("1_c5ls3")
+source_id = 1
+atlas_coord = Vector2i(2, 4)
+preview_color = Color(0.29411766, 0.4117647, 0.18431373, 1)
+metadata/_custom_type_script = "uid://e45byecr4gi6"
+
+[sub_resource type="GaeaLayer" id="GaeaLayer_5klxt"]
+
+[sub_resource type="GaeaLayer" id="GaeaLayer_t6ehb"]
+
+[resource]
+script = ExtResource("2_c5ls3")
+layers = Array[GaeaLayer]([SubResource("GaeaLayer_5klxt"), SubResource("GaeaLayer_t6ehb")])
+preview_coordinate_format = 1
+preview_seed = 4127297601
+preview_size_preset = 5
+preview_world_size = Vector3i(80, 45, 1)
+preview_chunk_size = Vector3i(80, 45, 1)
+save_version = 6
+_connections = Array[StringName]([&"1-0-2-1", &"2-0-0-0", &"4-0-0-1", &"5-0-4-1", &"6-0-8-0", &"8-0-7-0", &"8-1-7-1", &"7-0-9-0", &"9-0-4-2", &"13-0-2-0", &"11-0-13-0", &"13-0-14-0", &"14-0-4-0"])
+_node_data = Dictionary[int, Dictionary]({
+0: {
+&"position": Vector2(760, 140),
+&"salt": 1744011981,
+&"type": 0,
+&"uid": "uid://dol7xviglksx4"
+},
+1: {
+&"arguments": {
+&"name": "Floor"
+},
+&"position": Vector2(-300, -60),
+&"salt": 3202296564,
+&"type": 0,
+&"uid": "uid://cqs1w714pbfql"
+},
+2: {
+&"arguments": {
+&"material": null,
+&"range": {
+"max": 1.0,
+"min": 0.0
+},
+&"reference_data": Dictionary[Vector3i, float]({})
+},
+&"position": Vector2(0, -60),
+&"salt": 2749025664,
+&"type": 0,
+&"uid": "uid://djjvx650evm0n"
+},
+3: {
+&"arguments": {
+&"value": 1.0
+},
+&"position": Vector2(-300, -680),
+&"salt": 1870106755,
+&"type": 0,
+&"uid": "uid://b7naniphpp341"
+},
+4: {
+&"arguments": {
+&"amount": 100,
+&"material": null,
+&"reference_data": Dictionary[Vector3i, float]({})
+},
+&"position": Vector2(340, 420),
+&"salt": 1576358129,
+&"type": 0,
+&"uid": "uid://bjmyuomcmtwq6"
+},
+5: {
+&"arguments": {
+&"name": "TallCactus"
+},
+&"position": Vector2(60, 460),
+&"salt": 1916099679,
+&"type": 0,
+&"uid": "uid://cqs1w714pbfql"
+},
+6: {
+&"arguments": {
+&"input": 1
+},
+&"position": Vector2(-560, 600),
+&"salt": 997340871,
+&"type": 0,
+&"uid": "uid://fc8vogh4mvhw"
+},
+7: {
+&"position": Vector2(-120, 600),
+&"salt": 80078940,
+&"type": 0,
+&"uid": "uid://yu78bj4he27g"
+},
+8: {
+&"position": Vector2(-340, 560),
+&"salt": 3061406858,
+&"type": 0,
+&"uid": "uid://b1vu2sfwynxql"
+},
+9: {
+&"arguments": {
+&"b": 0.05
+},
+&"position": Vector2(80, 600),
+&"salt": 2957801494,
+&"type": 0,
+&"uid": "uid://yu78bj4he27g"
+},
+10: {
+&"attached": Array[int]([6, 8, 7, 9, 4, 5, 14]),
+&"position": Vector2(-700, 220),
+&"title": "Trees",
+&"type": 1
+},
+11: {
+&"position": Vector2(-560, -120),
+&"salt": 1158065005,
+&"type": 0,
+&"uid": "uid://cgnbu4kly4sls"
+},
+13: {
+&"position": Vector2(-200, 80),
+&"reroute_type": 200,
+&"salt": 634601648,
+&"type": 0,
+&"uid": "uid://bgqqucap4kua4"
+},
+14: {
+&"arguments": {
+&"range": {
+"max": 1.0,
+"min": 0.1
+}
+},
+&"position": Vector2(-40, 260),
+&"salt": 3785451428,
+&"type": 0,
+&"uid": "uid://d3ahx5mfke6wg"
+}
+})
+_parameters = Dictionary[StringName, Variant]({
+&"Floor": {
+"hint": 17,
+"hint_string": "GaeaMaterial",
+"name": "Floor",
+"type": 24,
+"usage": 4,
+"value": SubResource("Resource_3e4ue")
+},
+&"TallCactus": {
+"hint": 17,
+"hint_string": "GaeaMaterial",
+"name": "TallCactus",
+"type": 24,
+"usage": 4,
+"value": SubResource("Resource_i80a5")
+}
+})
+metadata/_custom_type_script = "uid://dae6umbqb872e"

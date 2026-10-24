@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GaeaGrid" inherits="RefCounted" api_type="extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Abstract class for the 2 grid types in Gaea, [enum GaeaValue.Type].SAMPLE and [enum GaeaValue.Type].MAP. Holds a grid of values.
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="erase">
+			<return type="void" />
+			<param index="0" name="cell" type="Vector3i" />
+			<description>
+				Erases the specified cell.
+			</description>
+		</method>
+		<method name="fill">
+			<return type="void" />
+			<param index="0" name="area" type="AABB" />
+			<param index="1" name="value" type="Variant" />
+			<description>
+				Fills [param area] with [param value].
+			</description>
+		</method>
+		<method name="get_cell" qualifiers="const">
+			<return type="Variant" />
+			<param index="0" name="cell" type="Vector3i" />
+			<param index="1" name="default_value" type="Variant" default="null" />
+			<description>
+				Returns the value at [param cell]. If it doesn't exist, returns [param default_value].
+			</description>
+		</method>
+		<method name="get_cell_count" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the amount of used cells.
+			</description>
+		</method>
+		<method name="get_cells" qualifiers="const">
+			<return type="Vector3i[]" />
+			<description>
+				Returns a list of all used cells.
+			</description>
+		</method>
+		<method name="get_xyz" qualifiers="const">
+			<return type="Variant" />
+			<param index="0" name="x" type="int" />
+			<param index="1" name="y" type="int" />
+			<param index="2" name="z" type="int" />
+			<param index="3" name="default_value" type="Variant" default="null" />
+			<description>
+				Returns the value at ([param x], [param y], [param z]). If it doesn't exist, returns [param default_value].
+			</description>
+		</method>
+		<method name="has" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="cell" type="Vector3i" />
+			<description>
+				Returns [code]true[/code] if [param cell] exists.
+			</description>
+		</method>
+		<method name="is_empty" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the grid has no cell.
+			</description>
+		</method>
+		<method name="set_cell">
+			<return type="void" />
+			<param index="0" name="cell" type="Vector3i" />
+			<param index="1" name="value" type="Variant" />
+			<description>
+				Sets the value at [param cell] to [param value].
+			</description>
+		</method>
+		<method name="set_xyz">
+			<return type="void" />
+			<param index="0" name="x" type="int" />
+			<param index="1" name="y" type="int" />
+			<param index="2" name="z" type="int" />
+			<param index="3" name="value" type="Variant" />
+			<description>
+				Sets the value at ([param x], [param y], [param z]) to [param value].
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="end" type="Vector3i" setter="" getter="get_end" default="Vector3i(0, 0, 0)">
+			Position of the bottom right cell.
+		</member>
+		<member name="position" type="Vector3i" setter="" getter="get_position" default="Vector3i(0, 0, 0)">
+			Position of the top left cell.
+		</member>
+		<member name="size" type="Vector3i" setter="" getter="get_size" default="Vector3i(0, 0, 0)">
+			Size of the bounding box of the grid.
+		</member>
+	</members>
+</class>

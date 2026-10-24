@@ -1,0 +1,105 @@
+[gd_scene format=4 uid="uid://ckdu53c5uqdi2"]
+
+[ext_resource type="Script" uid="uid://d4feanreabm81" path="res://addons/gaea/runtime/scene_nodes/generator.gd" id="1_isojd"]
+[ext_resource type="Resource" uid="uid://bnejoskp261es" path="res://demos/chunk_demo/chunk_demo_graph.tres" id="2_2aow5"]
+[ext_resource type="TileSet" uid="uid://dhtofk0w7bjmh" path="res://demos/common/tileset.tres" id="3_2aow5"]
+[ext_resource type="Script" uid="uid://rfsrtakmflly" path="res://addons/gaea/runtime/scene_nodes/threading/task_pool.gd" id="4_fuoyj"]
+[ext_resource type="Script" uid="uid://b4x16tyyfihmb" path="res://addons/gaea/runtime/scene_nodes/renderers/tilemap_renderer.gd" id="4_s1re1"]
+[ext_resource type="Script" uid="uid://cvqs2wfp0ix6s" path="res://demos/player.gd" id="6_rhpni"]
+[ext_resource type="Script" uid="uid://btdvr3362d6ln" path="res://addons/gaea/runtime/scene_nodes/chunk_loaders/chunk_loader.gd" id="7_7fudp"]
+[ext_resource type="Script" uid="uid://cn6suvio0k26l" path="res://addons/gaea/runtime/scene_nodes/chunk_loaders/actor_tilemap.gd" id="8_4xa8f"]
+[ext_resource type="Texture2D" uid="uid://c71a5fc8vmqgo" path="res://demos/common/tileset.png" id="9_ohd8t"]
+
+[sub_resource type="GaeaGenerationSettings" id="GaeaGenerationSettings_lubqp"]
+seed = 1649760492
+world_size = Vector3i(16, 9, 1)
+
+[sub_resource type="Resource" id="Resource_ohd8t"]
+script = ExtResource("4_fuoyj")
+
+[sub_resource type="Resource" id="Resource_if0pq"]
+script = ExtResource("8_4xa8f")
+tilemap = NodePath("../Ground")
+player = NodePath("../Player")
+metadata/_custom_type_script = "uid://cn6suvio0k26l"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7fudp"]
+atlas = ExtResource("9_ohd8t")
+region = Rect2(8, 35, 8, 12)
+
+[node name="ChunkDemo" type="Node2D" unique_id=2081068840]
+
+[node name="GaeaGenerator" type="Node" parent="." unique_id=1451397893]
+script = ExtResource("1_isojd")
+graph = ExtResource("2_2aow5")
+settings = SubResource("GaeaGenerationSettings_lubqp")
+task_pool = SubResource("Resource_ohd8t")
+metadata/_custom_type_script = "uid://d4feanreabm81"
+
+[node name="Ground" type="TileMapLayer" parent="." unique_id=1672734879]
+tile_map_data = PackedByteArray("AAAAAAAAAQABAAAAAAAAAAEAAQABAAAAAAAAAAIAAQABAAAAAAAAAAMAAQABAAAAAAAAAAQAAQABAAAAAAAAAAUAAQABAAAAAAAAAAYAAQABAAAAAAAAAAcAAQABAAAAAAAAAAgAAQABAAAAAAABAAAAAQABAAAAAAABAAEAAQAAAAAAAAABAAIAAQAAAAAAAAABAAMAAQAAAAAAAAABAAQAAQAAAAAAAAABAAUAAQAAAAAAAAABAAYAAQAAAAAAAAABAAcAAQAAAAAAAAABAAgAAQABAAAAAAACAAAAAQABAAAAAAACAAEAAQAAAAAAAAACAAIAAQAAAAAAAAACAAMAAQAAAAAAAAACAAQAAQAAAAAAAAACAAUAAQAAAAAAAAACAAYAAQAAAAAAAAACAAcAAQAAAAAAAAACAAgAAQABAAAAAAADAAAAAQABAAAAAAADAAEAAQAAAAAAAAADAAIAAQAAAAAAAAADAAMAAQAAAAAAAAADAAQAAQAAAAAAAAADAAUAAQAAAAAAAAADAAYAAQAAAAAAAAADAAcAAQAAAAAAAAADAAgAAQABAAAAAAAEAAAAAQABAAAAAAAEAAEAAQAAAAAAAAAEAAIAAQAAAAAAAAAEAAMAAQAAAAAAAAAEAAQAAQAAAAAAAAAEAAUAAQAAAAAAAAAEAAYAAQAAAAAAAAAEAAcAAQAAAAAAAAAEAAgAAQABAAAAAAAFAAAAAQABAAAAAAAFAAEAAQAAAAAAAAAFAAIAAQAAAAAAAAAFAAMAAQAAAAAAAAAFAAQAAQAAAAAAAAAFAAUAAQAAAAAAAAAFAAYAAQAAAAAAAAAFAAcAAQAAAAAAAAAFAAgAAQABAAAAAAAGAAAAAQABAAAAAAAGAAEAAQAAAAAAAAAGAAIAAQAAAAAAAAAGAAMAAQAAAAAAAAAGAAQAAQAAAAAAAAAGAAUAAQAAAAAAAAAGAAYAAQAAAAAAAAAGAAcAAQAAAAAAAAAGAAgAAQABAAAAAAAHAAAAAQABAAAAAAAHAAEAAQAAAAAAAAAHAAIAAQAAAAAAAAAHAAMAAQAAAAAAAAAHAAQAAQAAAAAAAAAHAAUAAQAAAAAAAAAHAAYAAQAAAAAAAAAHAAcAAQAAAAAAAAAHAAgAAQABAAAAAAAIAAAAAQABAAAAAAAIAAEAAQAAAAAAAAAIAAIAAQAAAAAAAAAIAAMAAQAAAAAAAAAIAAQAAQAAAAAAAAAIAAUAAQAAAAAAAAAIAAYAAQAAAAAAAAAIAAcAAQAAAAAAAAAIAAgAAQABAAAAAAAJAAAAAQABAAAAAAAJAAEAAQAAAAAAAAAJAAIAAQAAAAAAAAAJAAMAAQAAAAAAAAAJAAQAAQAAAAAAAAAJAAUAAQAAAAAAAAAJAAYAAQAAAAAAAAAJAAcAAQAAAAAAAAAJAAgAAQABAAAAAAAKAAAAAQABAAAAAAAKAAEAAQAAAAAAAAAKAAIAAQAAAAAAAAAKAAMAAQAAAAAAAAAKAAQAAQAAAAAAAAAKAAUAAQAAAAAAAAAKAAYAAQAAAAAAAAAKAAcAAQAAAAAAAAAKAAgAAQABAAAAAAALAAAAAQABAAAAAAALAAEAAQAAAAAAAAALAAIAAQAAAAAAAAALAAMAAQAAAAAAAAALAAQAAQAAAAAAAAALAAUAAQAAAAAAAAALAAYAAQAAAAAAAAALAAcAAQAAAAAAAAALAAgAAQABAAAAAAAMAAAAAQABAAAAAAAMAAEAAQAAAAAAAAAMAAIAAQAAAAAAAAAMAAMAAQAAAAAAAAAMAAQAAQAAAAAAAAAMAAUAAQAAAAAAAAAMAAYAAQAAAAAAAAAMAAcAAQAAAAAAAAAMAAgAAQABAAAAAAANAAAAAQABAAAAAAANAAEAAQAAAAAAAAANAAIAAQAAAAAAAAANAAMAAQAAAAAAAAANAAQAAQAAAAAAAAANAAUAAQAAAAAAAAANAAYAAQAAAAAAAAANAAcAAQAAAAAAAAANAAgAAQABAAAAAAAOAAAAAQABAAAAAAAOAAEAAQAAAAAAAAAOAAIAAQAAAAAAAAAOAAMAAQAAAAAAAAAOAAQAAQAAAAAAAAAOAAUAAQAAAAAAAAAOAAYAAQAAAAAAAAAOAAcAAQAAAAAAAAAOAAgAAQABAAAAAAAPAAAAAQABAAAAAAAPAAEAAQABAAAAAAAPAAIAAQABAAAAAAAPAAMAAQABAAAAAAAPAAQAAQABAAAAAAAPAAUAAQABAAAAAAAPAAYAAQABAAAAAAAPAAcAAQABAAAAAAAPAAgAAQABAAAAAAA=")
+tile_set = ExtResource("3_2aow5")
+
+[node name="Tree" type="TileMapLayer" parent="." unique_id=865949594]
+tile_map_data = PackedByteArray("AAADAAQAAQACAAQAAAAIAAEAAQACAAQAAAACAAMAAQACAAQAAAAKAAMAAQACAAQAAAAFAAYAAQACAAQAAAAHAAUAAQACAAQAAAAJAAIAAQACAAQAAAA=")
+tile_set = ExtResource("3_2aow5")
+
+[node name="TilemapGaeaRenderer" type="Node" parent="." unique_id=1473827293 node_paths=PackedStringArray("tile_map_layers", "generator")]
+script = ExtResource("4_s1re1")
+tile_map_layers = [NodePath("../Ground"), NodePath("../Tree"), null, null]
+generator = NodePath("../GaeaGenerator")
+metadata/_custom_type_script = "uid://b4x16tyyfihmb"
+
+[node name="GaeaChunkLoader" type="Node" parent="." unique_id=1345323522 node_paths=PackedStringArray("generator")]
+script = ExtResource("7_7fudp")
+generator = NodePath("../GaeaGenerator")
+actor = SubResource("Resource_if0pq")
+chunk_size = Vector3i(16, 9, 1)
+loading_radius = Vector3i(1, 1, 1)
+metadata/_custom_type_script = "uid://btdvr3362d6ln"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1443702020]
+visible = false
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer" unique_id=455929592]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Generate" type="Button" parent="CanvasLayer/MarginContainer" unique_id=1121279250]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+text = "Generate"
+
+[node name="Player" type="Sprite2D" parent="." unique_id=172931684]
+position = Vector2(11, 11)
+texture = SubResource("AtlasTexture_7fudp")
+centered = false
+offset = Vector2(-4, -10)
+script = ExtResource("6_rhpni")
+speed = 100.0
+
+[node name="Camera2D" type="Camera2D" parent="Player" unique_id=2022561173]
+
+[node name="ReferenceRect" type="ReferenceRect" parent="." unique_id=1965560192]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+editor_only = false
+
+[connection signal="pressed" from="CanvasLayer/MarginContainer/Generate" to="GaeaGenerator" method="generate"]

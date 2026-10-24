@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GaeaValue" inherits="RefCounted" api_type="extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Holds information about the argument value types of Gaea.
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+		<link title="Anatomy of a Graph">https://gaea-docs.readthedocs.io/en/2.x/the-basics/anatomy-of-a-graph</link>
+	</tutorials>
+	<methods>
+		<method name="can_cast" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="from" type="int" enum="GaeaValue.ArgType" />
+			<param index="1" name="to" type="int" enum="GaeaValue.ArgType" />
+			<description>
+				Returns [code]true[/code] if a value of type [param from] can be converted into a value of type [param to].
+			</description>
+		</method>
+		<method name="cast_value" qualifiers="static">
+			<return type="Variant" />
+			<param index="0" name="from" type="int" enum="GaeaValue.ArgType" />
+			<param index="1" name="to" type="int" enum="GaeaValue.ArgType" />
+			<param index="2" name="value" type="Variant" />
+			<description>
+				If [method can_cast] returns [code]true[/code], converts [param value] from type [param from] to type [param to].
+			</description>
+		</method>
+		<method name="from_old_slot_type" qualifiers="static">
+			<return type="int" enum="GaeaValue.ArgType" />
+			<param index="0" name="old_type" type="int" />
+			<description>
+				Used to convert old GaeaEditorGraphNode.SlotTypes to new [enum ArgType].
+			</description>
+		</method>
+		<method name="from_variant_type" qualifiers="static">
+			<return type="int" enum="GaeaValue.ArgType" />
+			<param index="0" name="type" type="int" enum="Variant.Type" />
+			<param index="1" name="hint" type="int" enum="PropertyHint" />
+			<param index="2" name="hint_string" type="String" />
+			<description>
+				Returns the associated [enum ArgType] to [param type] of [enum Variant.Type]. Returns [constant @GlobalScope.TYPE_NIL] if there is none.
+			</description>
+		</method>
+		<method name="get_color" qualifiers="static">
+			<return type="Color" />
+			<param index="0" name="type" type="int" enum="GaeaValue.ArgType" />
+			<description>
+				Returns the configured color for slots of [param type].
+			</description>
+		</method>
+		<method name="get_default_color" qualifiers="static">
+			<return type="Color" />
+			<param index="0" name="type" type="int" enum="GaeaValue.ArgType" />
+			<description>
+				Returns the default color for slots of [param type].
+			</description>
+		</method>
+		<method name="get_default_slot_icon" qualifiers="static">
+			<return type="Texture2D" />
+			<param index="0" name="type" type="int" enum="GaeaValue.ArgType" />
+			<description>
+				Returns the default icon for slots of [param type].
+			</description>
+		</method>
+		<method name="get_default_value" qualifiers="static">
+			<return type="Variant" />
+			<param index="0" name="type" type="int" enum="GaeaValue.ArgType" />
+			<description>
+				Returns the default value for [param type]. Returns [code]null[/code] if there is none.
+			</description>
+		</method>
+		<method name="get_display_icon" qualifiers="static">
+			<return type="Texture2D" />
+			<param index="0" name="type" type="int" enum="GaeaValue.ArgType" />
+			<description>
+				Returns the icon associated to [param type] to be used in the 'Create Node' pop-up.
+			</description>
+		</method>
+		<method name="get_editor_for_type" qualifiers="static">
+			<return type="PackedScene" />
+			<param index="0" name="type" type="int" enum="GaeaValue.ArgType" />
+			<description>
+				Returns the [GaeaEditorGraphNodeArgument] scene associated with [param type].
+			</description>
+		</method>
+		<method name="get_slot_icon" qualifiers="static">
+			<return type="Texture2D" />
+			<param index="0" name="type" type="int" enum="GaeaValue.ArgType" />
+			<description>
+				Returns the configured icon for slots of [param type].
+			</description>
+		</method>
+		<method name="get_type_string" qualifiers="static">
+			<return type="String" />
+			<param index="0" name="type" type="int" enum="GaeaValue.ArgType" />
+			<description>
+				Returns the name of [param type].
+			</description>
+		</method>
+		<method name="get_types" qualifiers="static">
+			<return type="int[]" />
+			<description>
+				Returns a list of all [enum ArgType] values.
+			</description>
+		</method>
+		<method name="has_preview" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="type" type="int" enum="GaeaValue.ArgType" />
+			<description>
+				Returns [code]true[/code] if outputs of [param type] can be previewed in the editor.
+			</description>
+		</method>
+		<method name="is_valid_connection" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="from" type="int" enum="GaeaValue.ArgType" />
+			<param index="1" name="to" type="int" enum="GaeaValue.ArgType" />
+			<description>
+				Returns [code]true[/code] if a connection from a [param from] output slot to a [param to] input slot is valid.
+			</description>
+		</method>
+		<method name="is_wireable" qualifiers="static">
+			<return type="bool" />
+			<param index="0" name="type" type="int" enum="GaeaValue.ArgType" />
+			<description>
+				Returns [code]true[/code] if [param type] accepts inputs.
+			</description>
+		</method>
+	</methods>
+	<constants>
+		<constant name="ARG_TYPE_CATEGORY" value="-1" enum="ArgType">
+			Argument is used as visual separation. Doesn't get saved.
+		</constant>
+		<constant name="ARG_TYPE_NIL" value="0" enum="ArgType">
+			Argument is invalid.
+		</constant>
+		<constant name="ARG_TYPE_BOOLEAN" value="1" enum="ArgType">
+			Argument is of type [bool].
+		</constant>
+		<constant name="ARG_TYPE_INT" value="2" enum="ArgType">
+			Argument is of type [int].
+		</constant>
+		<constant name="ARG_TYPE_FLOAT" value="3" enum="ArgType">
+			Argument is of type [float].
+		</constant>
+		<constant name="ARG_TYPE_VECTOR2" value="5" enum="ArgType">
+			Argument is of type [Vector2].
+		</constant>
+		<constant name="ARG_TYPE_VECTOR2I" value="6" enum="ArgType">
+			Argument is of type [Vector2i].
+		</constant>
+		<constant name="ARG_TYPE_VECTOR3" value="9" enum="ArgType">
+			Argument is of type [Vector3].
+		</constant>
+		<constant name="ARG_TYPE_VECTOR3I" value="10" enum="ArgType">
+			Argument is of type [Vector3i].
+		</constant>
+		<constant name="ARG_TYPE_ANY" value="99" enum="ArgType">
+			Argument accepts any other type.
+		</constant>
+		<constant name="ARG_TYPE_RANGE" value="100" enum="ArgType">
+			Argument is a range between a min and a max. Internally, a dictionary with two keys:
+			[codeblock]
+			{ "min": float, "max": float }
+			[/codeblock]
+		</constant>
+		<constant name="ARG_TYPE_MATERIAL" value="101" enum="ArgType">
+			Argument is of type [GaeaMaterial].
+		</constant>
+		<constant name="ARG_TYPE_TEXTURE" value="102" enum="ArgType">
+			Argument is of type [Texture].
+		</constant>
+		<constant name="ARG_TYPE_SAMPLE" value="200" enum="ArgType">
+			Argument is of type [GaeaSample].
+		</constant>
+		<constant name="ARG_TYPE_MAP" value="201" enum="ArgType">
+			Argument is of type [GaeaMap].
+		</constant>
+		<constant name="ARG_TYPE_BITMASK" value="300" enum="ArgType">
+			Argument is an [int] representing a bitmask.
+		</constant>
+		<constant name="ARG_TYPE_BITMASK_EXCLUSIVE" value="301" enum="ArgType">
+			Same as [constant GaeaValue.ARG_TYPE_BITMASK], but only one bit can be active at once.
+		</constant>
+		<constant name="ARG_TYPE_FLAGS" value="302" enum="ArgType">
+			Argument is an [Array] of flags. Same interface as [constant GaeaValue.ARG_TYPE_BITMASK].
+		</constant>
+		<constant name="ARG_TYPE_NEIGHBORS" value="303" enum="ArgType">
+			Argument is an [Array] of offsets from a center tile.
+		</constant>
+		<constant name="ARG_TYPE_RULES" value="304" enum="ArgType">
+			Argument is a grid of rules for each cell in an area. See more in [GaeaNodeRulesPlacer].
+		</constant>
+		<constant name="ARG_TYPE_VARIABLE_NAME" value="305" enum="ArgType">
+			Argument is the name of a [GaeaNodeParameter].
+		</constant>
+		<constant name="ARG_TYPE_ENUM" value="306" enum="ArgType">
+			Argument is an enum.
+		</constant>
+		<constant name="COORDINATE_FORMAT_ALIGNED_3D" value="0" enum="CoordinateFormat">
+		</constant>
+		<constant name="COORDINATE_FORMAT_ALIGNED_2D" value="1" enum="CoordinateFormat">
+		</constant>
+		<constant name="COORDINATE_FORMAT_VERTICAL_OFFSET_2D" value="2" enum="CoordinateFormat">
+		</constant>
+		<constant name="COORDINATE_FORMAT_HORIZONTAL_OFFSET_2D" value="3" enum="CoordinateFormat">
+		</constant>
+		<constant name="CELL_CHECK_MODE_BOOL" value="0" enum="CellCheckMode">
+		</constant>
+		<constant name="CELL_CHECK_MODE_TRISTATE" value="1" enum="CellCheckMode">
+		</constant>
+	</constants>
+</class>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GaeaResult" inherits="RefCounted" api_type="extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		The result of a [GaeaGenerator]'s generation.
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="add_layer">
+			<return type="void" />
+			<param index="0" name="idx" type="int" />
+			<param index="1" name="value" type="Variant" />
+			<param index="2" name="resource" type="GaeaLayer" />
+			<description>
+				Sets the layer at [param idx] to [param value]. If [param resource] is disabled (and is not [code]null[/code]), sets it to [code]null[/code] (see [member GaeaLayer.enabled]).
+			</description>
+		</method>
+		<method name="get_enabled_layers_indexes" qualifiers="const">
+			<return type="int[]" />
+			<description>
+				Returns a list of the indexes of all non-[code]null[/code] layers.
+			</description>
+		</method>
+		<method name="get_layer" qualifiers="const">
+			<return type="Variant" />
+			<param index="0" name="idx" type="int" />
+			<description>
+				Returns the value at layer [param idx].
+			</description>
+		</method>
+		<method name="get_layer_count" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the amount of layers the result has.
+			</description>
+		</method>
+	</methods>
+</class>

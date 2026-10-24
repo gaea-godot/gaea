@@ -1,0 +1,128 @@
+---
+BasedOnStyle: LLVM
+AccessModifierOffset: -4
+AlignAfterOpenBracket: BlockIndent
+AlignEscapedNewlines: Left
+AlignOperands: AlignAfterOperator
+AlignTrailingComments: false
+RemoveSemicolon: true
+
+#Allow
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortBlocksOnASingleLine: Always
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Always
+AllowShortLambdasOnASingleLine: All
+AllowShortEnumsOnASingleLine: false
+
+AlwaysBreakAfterDefinitionReturnType: None
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: false
+AlwaysBreakTemplateDeclarations: Yes
+
+BinPackArguments: false
+BinPackParameters: false
+
+#Brace`
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterCaseLabel: false
+  AfterClass: false
+  AfterControlStatement: Never
+  AfterEnum: false
+  AfterFunction: false
+  AfterNamespace: false
+  AfterStruct: false
+  AfterUnion: false
+  AfterExternBlock: false
+  BeforeCatch: false
+  BeforeElse: false
+  BeforeWhile: false
+  IndentBraces: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: AfterColon
+BreakInheritanceList: AfterComma
+BreakStringLiterals: true
+ColumnLimit: 120
+CompactNamespaces: false
+ConstructorInitializerIndentWidth: 2
+ContinuationIndentWidth: 2
+Cpp11BracedListStyle: true
+DerivePointerAlignment: false
+DisableFormat: false
+EmptyLineAfterAccessModifier: Never
+EmptyLineBeforeAccessModifier: Always
+ExperimentalAutoDetectBinPacking: false
+FixNamespaceComments: true
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '".*"'
+    Priority: 1
+  - Regex: '^<.*\.h>'
+    Priority: 2
+  - Regex: '^<.*'
+    Priority: 3
+IndentAccessModifiers: false
+IndentCaseLabels: true
+IndentPPDirectives: None
+IndentWidth: 4
+IndentWrappedFunctionNames: false
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 1
+NamespaceIndentation: All
+PackConstructorInitializers: CurrentLine
+
+#Penalty
+PenaltyBreakAssignment: 40
+PenaltyBreakBeforeFirstCallParameter: 0
+PenaltyBreakComment: 100
+PenaltyBreakFirstLessLess: 0
+PenaltyBreakOpenParenthesis: 0
+PenaltyBreakString: 100
+PenaltyBreakTemplateDeclaration: 0
+PenaltyExcessCharacter: 1
+PenaltyIndentedWhitespace: 0
+PenaltyReturnTypeOnItsOwnLine: 10000
+
+PointerAlignment: Left
+ReferenceAlignment: Left
+ReflowComments: true
+SeparateDefinitionBlocks: Always
+ShortNamespaceLines: 0
+SortIncludes: CaseInsensitive
+SortUsingDeclarations: false
+
+#Space
+SpaceAfterCStyleCast: true
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCpp11BracedList: true
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeParens: ControlStatements
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 0
+SpacesInAngles: false
+SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals: false
+SpacesInLineCommentPrefix:
+  Minimum: 1
+  Maximum: 1
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+
+#Tab
+TabWidth: 4
+UseTab: Never
+---
+Language: Cpp
+Standard: c++17
+...
